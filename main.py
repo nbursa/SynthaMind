@@ -1,20 +1,30 @@
-from world_simulation.environment import AIWorld
+import random
 from core_intelligence.instinct_processor import EvolvAIInstinctProcessor
+from world_simulation.environment import AIWorld
 import time
 
 # Initialize the world and AI
-world = AIWorld(width=10, height=10)  # Create a simple 10x10 grid world
+world = AIWorld(width=10, height=10)
 ai = EvolvAIInstinctProcessor(world)
 
 print("EvolvAI is starting...")
 
 while True:
     if world.has_fully_explored():
-        print("🚀 EvolvAI has fully explored its world! Learning is complete.")
-        break  # Stop execution
+        print("EvolvAI has fully explored the world. Exploration complete.")
+        break
 
-    if ai.check_boredom():
+    valid_moves = world.get_valid_moves()
+    if not valid_moves:
+        print("EvolvAI has no valid moves left. Exploration complete.")
+        break
+
+    random_move = random.choice(valid_moves)
+    new_stimulus = world.execute_move(random_move)
+
+    if new_stimulus:
+        print(f"EvolvAI found something related to {new_stimulus}!")
+    else:
         print("EvolvAI is bored! Exploring the world...")
-        ai.explore_world()
 
-    time.sleep(1)  # Simulate real-time updates
+    time.sleep(1)  # Simulate real-time exploration
