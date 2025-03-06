@@ -19,14 +19,6 @@ class EvolvAIInstinctProcessor:
         sensory_limit = self.instincts.sensory_limit
         return data[:sensory_limit] if len(data) > sensory_limit else data
 
-    def detect_low_entropy(self, data):
-        """ Determines if the input data is too predictable (AI should seek new knowledge) """
-        return len(data) == 0 or np.std(data) < self.instincts.curiosity_threshold
-
-    def prevent_contradictions(self, previous_state, new_state):
-        """ Prevents logical contradictions & infinite loops """
-        return previous_state != new_state
-
     def check_boredom(self):
         """ EvolvAI gets bored if no meaningful input occurs for 10 seconds """
         return time.time() - self.last_stimulation_time >= 10
@@ -36,7 +28,13 @@ class EvolvAIInstinctProcessor:
         self.last_stimulation_time = time.time()
 
     def explore_world(self):
-        """ AI moves randomly in its environment to seek new stimuli when bored """
+        """ AI moves randomly in its environment to seek new stimuli when bored.
+            If everything is explored, it stops learning.
+        """
+        if self.world.has_fully_explored():
+            print("🚀 EvolvAI has fully explored its world! Stopping learning.")
+            return None  # Stop further exploration
+
         possible_moves = self.world.get_valid_moves()
         if not possible_moves:
             return None  # No available moves
@@ -45,7 +43,6 @@ class EvolvAIInstinctProcessor:
         new_stimulus = self.world.execute_move(random_move)  # AI moves & interacts
 
         if new_stimulus:
-            print(f"EvolvAI found something! {new_stimulus}")  # Debugging output
             self.update_stimulation_time()  # Reset boredom if new information is found
             return new_stimulus
 

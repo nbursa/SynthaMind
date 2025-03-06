@@ -9,9 +9,12 @@ ai = EvolvAIInstinctProcessor(world)
 print("EvolvAI is starting...")
 
 while True:
-    # Check if AI is bored
+    if world.has_fully_explored():
+        print("🚀 EvolvAI has fully explored its world! Learning is complete.")
+        break  # Stop execution
+
     if ai.check_boredom():
         print("EvolvAI is bored! Exploring the world...")
         ai.explore_world()
 
-    time.sleep(1)  # Wait for 1 second before next check (simulate real-time updates)
+    time.sleep(1)  # Simulate real-time updates
