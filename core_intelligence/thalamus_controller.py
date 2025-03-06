@@ -1,38 +1,30 @@
-from world_simulation.wikipedia_explorer import WikipediaExplorer
-from core_intelligence.hippocampus_memory import HippocampusMemory
 import random
+from core_intelligence.hippocampus_memory import HippocampusMemory
+from world_simulation.wikipedia_explorer import WikipediaExplorer
 
 class ThalamusController:
-    """Routes knowledge between instinct processing, memory, and specialization engine."""
+    """Central controller that manages AI's exploration and learning decisions."""
 
-    def __init__(self, specialization="general"):
+    def __init__(self, specialization):
+        self.specialization = specialization
         self.memory = HippocampusMemory()
         self.wiki_explorer = WikipediaExplorer()
-        self.specialization = specialization.lower()
-        self.interest_levels = {}  # Tracks interest intensity in topics
-        self.instinct_priority = ["machine learning", "neural networks", "deep learning"]  # Default AI instincts
+        self.instinct_priority = ["machine learning", "neural networks", "deep learning"]  # Example instincts
 
     def learn_topic(self, topic):
-        """AI learns a topic, checking memory first."""
-        if not isinstance(topic, str) or not topic.strip():
-            print("⚠️ Invalid topic! Try again.")
-            return None
-
-        topic = topic.lower()
-
-        if self.memory.has_learned(topic):
-            print(f"✅ EvolvAI already knows about {topic}.")
-            return None
+        """Processes topic learning and stores knowledge."""
+        if not topic or topic.lower() in ["any topic", "any ai topic"]:
+            return
 
         summary = self.wiki_explorer.fetch_summary(topic)
         if summary:
             self.memory.store_knowledge(topic, summary)
-            self.track_interest(topic)
-            print(f"📖 EvolvAI learned: {summary[:300]}...")
-            return summary
-        else:
-            print(f"⚠️ No information found on {topic}. AI will self-correct.")
-            return self.suggest_next_topic()
+            print(f"🌍 EvolvAI is studying: {topic}")
+            print(f"📖 EvolvAI learned: {summary[:500]}...\n")  # Print preview
+            related_topics = self.wiki_explorer.explore_related_topics(topic, self.specialization, self.memory.get_learned_topics())
+
+            if related_topics:
+                print(f"🔍 EvolvAI suggests exploring: {', '.join(related_topics)}")
 
     def suggest_next_topic(self):
         """Suggests the next best topic, ensuring it's relevant."""
@@ -46,7 +38,7 @@ class ThalamusController:
         # Find next topic aligned with specialization
         related_topics = []
         for topic in learned_topics:
-            related = self.wiki_explorer.explore_related_topics(topic, self.specialization)
+            related = self.wiki_explorer.explore_related_topics(topic, self.specialization, learned_topics)
             related_topics.extend([t for t in related if t not in learned_topics])
 
         if related_topics:
@@ -54,7 +46,3 @@ class ThalamusController:
 
         print("🛑 No more topics available. EvolvAI has reached knowledge saturation.")
         return None
-
-    def track_interest(self, topic):
-        """Adjusts AI interest in topics, reinforcing learning depth."""
-        self.interest_levels[topic] = self.interest_levels.get(topic, 0) + 1

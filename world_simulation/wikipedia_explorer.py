@@ -21,19 +21,7 @@ class WikipediaExplorer:
 
         related_topics = []
         for link_title in page.links.keys():
-            # Avoid disambiguation pages and unrelated topics
             if specialization.lower() in link_title.lower() and link_title not in learned_topics:
                 related_topics.append(link_title)
-        
+
         return related_topics[:5]  # Return top 5 relevant topics
-
-    def suggest_next_topic(self, specialization, learned_topics):
-        """Suggest the next topic based on the specialization."""
-        page = self.wiki.page(specialization)
-        if not page.exists():
-            return None
-
-        for link_title in page.links.keys():
-            if specialization.lower() in link_title.lower() and link_title not in learned_topics:
-                return link_title  # Pick the first relevant topic
-        return None

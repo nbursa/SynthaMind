@@ -2,33 +2,33 @@ import json
 import os
 
 class HippocampusMemory:
-    """Manages learned knowledge storage and retrieval."""
+    """Handles storing and retrieving learned knowledge."""
 
-    def __init__(self, storage_file="knowledge_base.json"):
-        self.storage_file = storage_file
-        self.knowledge = self._load_memory()
+    def __init__(self, file_path="knowledge_base.json"):
+        self.file_path = file_path
+        self.knowledge_base = self._load_knowledge()
 
-    def _load_memory(self):
-        """Loads memory from file or initializes an empty structure."""
-        if os.path.exists(self.storage_file):
-            with open(self.storage_file, "r") as file:
+    def _load_knowledge(self):
+        """Loads existing knowledge from a file."""
+        if os.path.exists(self.file_path):
+            with open(self.file_path, "r", encoding="utf-8") as file:
                 return json.load(file)
         return {}
 
     def store_knowledge(self, topic, summary):
-        """Stores learned knowledge in memory."""
-        self.knowledge[topic.lower()] = summary
-        self._save_memory()
-
-    def has_learned(self, topic):
-        """Checks if a topic is already learned."""
-        return topic.lower() in self.knowledge
+        """Stores learned knowledge."""
+        self.knowledge_base[topic] = summary
+        self._save_knowledge()
 
     def get_learned_topics(self):
-        """Returns all learned topics."""
-        return list(self.knowledge.keys())  # ✅ Fix: Ensure we return a list of learned topics
+        """Returns topics that have been learned."""
+        return list(self.knowledge_base.keys())
 
-    def _save_memory(self):
-        """Saves memory to file."""
-        with open(self.storage_file, "w") as file:
-            json.dump(self.knowledge, file, indent=4)
+    def has_learned(self, topic):
+        """Checks if a topic has already been learned."""
+        return topic in self.knowledge_base
+
+    def _save_knowledge(self):
+        """Saves knowledge to a file."""
+        with open(self.file_path, "w", encoding="utf-8") as file:
+            json.dump(self.knowledge_base, file, indent=4, ensure_ascii=False)
