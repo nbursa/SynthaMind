@@ -3,4 +3,4 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store
-knnowledge_base.json
+core_intelligence/knowledge_base.json
