@@ -45,3 +45,14 @@ class WikipediaExplorer:
     def should_prompt_for_direction(self):
         """ Returns True if a learning checkpoint is reached. """
         return self.topics_learned_count % self.checkpoint_interval == 0 and self.topics_learned_count > 0
+    
+    def suggest_next_topic(self):
+        """ Suggest the next topic based on learned knowledge. """
+        if not self.learned_topics:
+            return None  # No previous learning
+
+        last_learned = list(self.learned_topics.keys())[-1]
+        related = self.explore_related_topics(last_learned)
+        
+        return related[0] if related else None  # Pick first related topic
+
