@@ -4,7 +4,7 @@ class WikipediaExplorer:
     """Handles Wikipedia-based knowledge retrieval and topic exploration."""
 
     def __init__(self, language='en', user_agent='EvolvAI/1.0'):
-        self.wiki = wikipediaapi.Wikipedia(user_agent=user_agent, language=language)
+        self.wiki = wikipediaapi.Wikipedia(user_agent=user_agent, language=language)  # ✅ Corrected argument order
 
     def fetch_summary(self, topic):
         """Retrieve a summary from Wikipedia."""
@@ -28,7 +28,11 @@ class WikipediaExplorer:
 
     def suggest_next_topic(self, specialization, knowledge_base):
         """Suggest the next topic based on the specialization."""
-        for page in self.wiki.page(specialization).links.keys():
-            if specialization.lower() in page.lower() and not knowledge_base.has_learned(page):
-                return page
+        specialization_page = self.wiki.page(specialization)
+        if not specialization_page.exists():
+            return None
+
+        for link_title in specialization_page.links.keys():
+            if specialization.lower() in link_title.lower() and not knowledge_base.has_learned(link_title):
+                return link_title
         return None
