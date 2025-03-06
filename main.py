@@ -6,7 +6,11 @@ wiki_explorer = WikipediaExplorer()
 
 print("EvolvAI is starting...")
 
-# Ask user if EvolvAI should explore on its own
+# Ask for specialization
+specialization = input("Enter a specialization field for EvolvAI (e.g., Medicine, Physics, AI): ").strip()
+wiki_explorer.set_specialization(specialization)
+
+# Ask if EvolvAI should explore automatically
 auto_exploration = input("Enable auto-exploration? (yes/no): ").strip().lower() == "yes"
 
 while True:
