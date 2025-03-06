@@ -29,7 +29,7 @@ Right now, EvolvAI operates as a **structured, rule-based knowledge explorer** t
 ✅ **Memory Retention**
 
 - Prevents repeated learning of the same topics.
-- Stores learned knowledge for future use.
+- Stores learned knowledge for future use with **Pinecone** for intelligent storage and retrieval.
 
 ✅ **Learning Checkpoints**
 
@@ -55,7 +55,7 @@ EvolvAI is **not yet an AI agent**, but the roadmap includes:
 
 2. **AI-Driven Memory & Storage**
 
-   - Replace the JSON knowledge base with **vector embeddings** (e.g., FAISS, ChromaDB) for **intelligent retrieval**.
+   - Replace the JSON knowledge base with **vector embeddings** (e.g., Pinecone, FAISS, ChromaDB) for **intelligent retrieval**.
 
 3. **Reinforcement Learning for Decision Making**
 
@@ -66,6 +66,7 @@ EvolvAI is **not yet an AI agent**, but the roadmap includes:
    - Use **LLMs (GPT, BERT, LLaMA)** to **generate insights, summarize data**, and **explain knowledge**.
 
 5. **Self-Optimization**
+
    - EvolvAI should **adjust its own learning strategies over time**, improving **exploration efficiency**.
 
 ---
@@ -75,14 +76,18 @@ EvolvAI is **not yet an AI agent**, but the roadmap includes:
 1️⃣ **Run EvolvAI**
 
 ```bash
-python main.py
+go run main.go
 ```
 
 2️⃣ **Choose a specialization field**
 
-- Example: `AI`, `Medicine`, `Physics`  
-  3️⃣ **Select Auto or Guided Exploration**
+- Example: `AI`, `Medicine`, `Physics`
+
+3️⃣ **Select Auto or Guided Exploration**
+
 - Auto: EvolvAI explores on its own.
-- Guided: User inputs topics to guide learning.  
-  4️⃣ **Periodically, EvolvAI pauses at checkpoints**
+- Guided: User inputs topics to guide learning.
+
+4️⃣ **Periodically, EvolvAI pauses at checkpoints**
+
 - Options: **Continue auto-learning**, **switch focus**, or **stop**.
