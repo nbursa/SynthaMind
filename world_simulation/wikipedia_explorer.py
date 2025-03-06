@@ -4,7 +4,8 @@ class WikipediaExplorer:
     """ Handles Wikipedia-based knowledge retrieval and topic exploration. """
 
     def __init__(self, language='en', user_agent='EvolvAI/1.0'):
-        self.wiki = wikipediaapi.Wikipedia(language, user_agent=user_agent)
+        self.wiki = wikipediaapi.Wikipedia(language=language)  # Fix: Pass language correctly
+        self.user_agent = user_agent  # Store user-agent separately
 
     def fetch_summary(self, topic):
         """ Retrieve a summary from Wikipedia. """
