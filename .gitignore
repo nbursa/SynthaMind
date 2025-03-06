@@ -5,4 +5,4 @@ __pycache__/
 .DS_Store
 
 # Ignore generated files
-core_intelligence/knowledge_base.json
+knowledge_base.json
