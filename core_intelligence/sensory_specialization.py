@@ -14,11 +14,15 @@ class SensorySpecialization:
             "mathematics": 1.0
         }
 
-    def update_specialization(self, category):
-        """ Increase interest in a specific category when encountered. """
+    def update_specialization(self, category, boost=0.1):
         if category in self.specialization_weights:
-            self.specialization_weights[category] += 0.1  # Small weight increase
-            self.normalize_weights()
+            self.specialization_weights[category] += boost
+            # Ensure weights remain normalized
+            total = sum(self.specialization_weights.values())
+            for key in self.specialization_weights:
+                self.specialization_weights[key] /= total
+        else:
+            print(f"Unknown category: {category}")
 
     def normalize_weights(self):
         """ Ensures AI doesn’t over-specialize too quickly. """
