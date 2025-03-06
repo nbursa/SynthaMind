@@ -3,8 +3,9 @@ import wikipediaapi
 class WikipediaExplorer:
     """Handles Wikipedia-based knowledge retrieval and topic exploration."""
 
-    def __init__(self, language='en', user_agent='EvolvAI/1.0'):
-        self.wiki = wikipediaapi.Wikipedia(user_agent=user_agent, language=language)  # ✅ Corrected argument order
+    def __init__(self, language='en', user_agent="EvolvAI/1.0 (contact: your-email@example.com)"):
+        """Initialize Wikipedia API with the required user-agent."""
+        self.wiki = wikipediaapi.Wikipedia(user_agent=user_agent, language=language)
 
     def fetch_summary(self, topic):
         """Retrieve a summary from Wikipedia."""
@@ -19,10 +20,8 @@ class WikipediaExplorer:
         if not page.exists():
             return []
 
-        related_topics = []
-        for link_title in page.links.keys():
-            if specialization.lower() in link_title.lower():
-                related_topics.append(link_title)
+        related_topics = [link_title for link_title in page.links.keys()
+                          if specialization.lower() in link_title.lower()]
 
         return related_topics[:5]  # Return top 5 relevant topics
 

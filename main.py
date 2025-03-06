@@ -10,6 +10,7 @@ def main():
         return
 
     enable_auto_exploration = input("Enable auto-exploration? (yes/no): ").strip().lower() == 'yes'
+    
     wiki_explorer = WikipediaExplorer()
     knowledge_base = KnowledgeBase()
 
@@ -23,13 +24,13 @@ def main():
         else:
             topic = input("Enter a new topic to guide EvolvAI (or press Enter to stop): ").strip()
             if not topic:
-                print("EvolvAI has completed its study.")
+                print("🚀 EvolvAI has completed its study.")
                 break
 
         summary = wiki_explorer.fetch_summary(topic)
         if summary:
             knowledge_base.add_entry(topic, summary)
-            print(f"📖 EvolvAI learned: {summary[:500]}...")  # Displaying only the first 500 characters for brevity
+            print(f"📖 EvolvAI learned: {summary[:500]}...")  # Displaying first 500 characters
         else:
             print(f"No information found for topic: {topic}")
 
@@ -43,15 +44,15 @@ def main():
             if user_input == 'no':
                 enable_auto_exploration = False
             elif user_input == 'exit':
-                print("EvolvAI has completed its study.")
+                print("🚀 EvolvAI has completed its study.")
                 break
         else:
             user_input = input("Do you want to continue exploring related topics? (yes/no): ").strip().lower()
             if user_input != 'yes':
-                print("EvolvAI has completed its study.")
+                print("🚀 EvolvAI has completed its study.")
                 break
 
-        time.sleep(1)  # Adding a short pause for better readability
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()
