@@ -30,4 +30,15 @@ while True:
         if related_topics:
             print(f"🔍 EvolvAI suggests exploring: {', '.join(related_topics)}")
 
+    # ✅ Periodic Breakpoints: Ask user for direction every N topics
+    if auto_exploration and wiki_explorer.should_prompt_for_direction():
+        print("\n📌 EvolvAI has reached a learning checkpoint.")
+        decision = input("Continue auto-learning (yes), select a field (no), or stop (exit)? ").strip().lower()
+
+        if decision == "no":
+            auto_exploration = False  # Switch to manual selection
+        elif decision == "exit":
+            print("🚀 EvolvAI has completed its study.")
+            break
+
     time.sleep(1)
