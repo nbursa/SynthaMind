@@ -13,14 +13,14 @@ class AIWorld:
     def __init__(self, width=10, height=10):
         self.width = width
         self.height = height
-        self.grid = self._generate_world()  # ✅ FIXED: Ensure this method exists
+        self.grid = self._generate_world()  # ✅ Ensure this method exists
         self.visited_positions = set()  # Tracks visited locations
         self.ai_position = self._place_ai()
         self.specialization_engine = SensorySpecialization()  # AI specialization engine
         self.knowledge_integration = KnowledgeIntegration(self.specialization_engine)  # NEW: Connect knowledge system
 
     def _generate_world(self):
-        """ ✅ FIXED: Generates a 2D grid with random objects categorized by knowledge fields. """
+        """ ✅ Generates a 2D grid with random objects categorized by knowledge fields. """
         return [
             [random.choice([None, None, (random.choice(self.KNOWLEDGE_CATEGORIES), "O")]) for _ in range(self.width)]
             for _ in range(self.height)
@@ -37,7 +37,6 @@ class AIWorld:
     def get_valid_moves(self):
         """ Returns possible movements AI can take, prioritizing unexplored areas. """
         x, y = self.ai_position
-        moves = []
         potential_moves = {
             "LEFT": (x - 1, y),
             "RIGHT": (x + 1, y),
@@ -66,8 +65,16 @@ class AIWorld:
         else:
             return None  # Invalid move, do nothing
 
+        # ✅ Track visited locations & log progress only once per cell
+        new_exploration = (x, y) not in self.visited_positions  # ✅ Check if new cell
         self.ai_position = (x, y)
-        self.visited_positions.add((x, y))  # Track visited locations
+        self.visited_positions.add((x, y))
+
+        # ✅ Only log progress once per new cell
+        if new_exploration:
+            progress = len(self.visited_positions)  # Number of visited cells
+            total_cells = self.width * self.height
+            print(f"EvolvAI explored a new cell. Progress: {progress}/{total_cells}")
 
         # Check if AI found an object
         stimulus = self.grid[y][x]
@@ -76,6 +83,7 @@ class AIWorld:
             self.grid[y][x] = None  # Object is "consumed"
             self.specialization_engine.update_specialization(category)  # AI learns from discovery
             self.knowledge_integration.integrate_knowledge(category)  # NEW: Link related fields
+            
             print(f"EvolvAI found something related to {category}!")
             self.knowledge_integration.print_knowledge()
             return category
