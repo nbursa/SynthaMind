@@ -1,93 +1,106 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
+	"database/sql"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
 	"time"
 
-	"evolvai/taskmanager"
-
 	"github.com/joho/godotenv"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func main() {
-	// Load environment variables from .env file
+var db *sql.DB
+
+type Task struct {
+	ID      int
+	Name    string
+	Vector  []byte
+}
+
+func init() {
+	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	// Get Pinecone API Key and Endpoint from environment
-	apiKey := os.Getenv("PINECONE_API_KEY")
-	if apiKey == "" {
-		log.Fatal("PINECONE_API_KEY not set in .env file")
+	// Connect to SQLite database
+	var errDb error
+	db, errDb = sql.Open("sqlite3", "./knowledge.db")
+	if errDb != nil {
+		log.Fatal("Failed to connect to database: ", errDb)
 	}
 
-	endpoint := os.Getenv("PINECONE_API_ENDPOINT")
-	if endpoint == "" {
-		log.Fatal("PINECONE_API_ENDPOINT not set in .env file")
+	// Create the table for tasks
+	_, errDb = db.Exec(`
+		CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			task_name TEXT,
+			vector BLOB
+		);
+	`)
+	if errDb != nil {
+		log.Fatal("Error creating table: ", errDb)
 	}
+}
 
-	// Pinecone namespace
-	namespace := "evolvai-memory" // Adjust namespace as needed
-
-	// Sample vector data (replace this with the task vector)
-	vector := map[string]interface{}{
-		"id": "1",
-		"values": []float32{0.1, 0.2, 0.3, 0.4, 0.5},  // Sample vector data
-		"metadata": map[string]interface{}{
-			"text": "Sample task data",
-		},
-	}
-
-	// Prepare the request payload
-	payload := map[string]interface{}{
-		"vectors": []interface{}{vector},
-		"namespace": namespace,
-	}
-
-	// Convert payload to JSON
-	payloadJSON, err := json.Marshal(payload)
-	if err != nil {
-		log.Fatal("Error marshaling payload:", err)
-	}
-
-	// Send POST request to Pinecone API
-	req, err := http.NewRequest("POST", endpoint+"/vectors/upsert", bytes.NewBuffer(payloadJSON))
-	if err != nil {
-		log.Fatal("Error creating HTTP request:", err)
-	}
-
-	// Set the authorization header with the API key
-	req.Header.Set("Authorization", "Api-Key "+apiKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	// Send the request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal("Error sending request:", err)
-	}
-	defer resp.Body.Close()
-
-	// Handle response
-	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("Error with Pinecone API request: %s", resp.Status)
-	} else {
-		fmt.Println("Data successfully upserted to Pinecone")
-	}
-
+func main() {
 	// Start task manager
 	fmt.Println("🚀 EvolvAI Task Manager Starting...")
-	go taskmanager.StartTaskManager()
+	go startTaskManager()
 
 	// Simulate incoming knowledge tasks
-	for {
-		taskmanager.AddTask("New knowledge detected")
-		time.Sleep(5 * time.Second)
+	for i := 0; i < 3; i++ {
+		taskName := fmt.Sprintf("Sample task %d", i+1)
+		insertTask(taskName, []byte{0x01, 0x02, 0x03, 0x04}) // Example vector data
+		time.Sleep(2 * time.Second)
+	}
+
+	// Fetch all tasks from the database
+	fetchTasks()
+}
+
+// Function to start task manager (for now just a print statement)
+func startTaskManager() {
+	fmt.Println("🧠 Task Manager Running...")
+}
+
+// Function to insert a task into the database
+func insertTask(taskName string, vector []byte) {
+	statement, err := db.Prepare("INSERT INTO tasks (task_name, vector) VALUES (?, ?)")
+	if err != nil {
+		log.Fatal("Error preparing statement: ", err)
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(taskName, vector)
+	if err != nil {
+		log.Fatal("Error inserting task: ", err)
+	}
+
+	fmt.Printf("🟢 Task '%s' inserted into database\n", taskName)
+}
+
+// Function to fetch all tasks from the database
+func fetchTasks() {
+	rows, err := db.Query("SELECT id, task_name FROM tasks")
+	if err != nil {
+		log.Fatal("Error fetching tasks: ", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var task Task
+		err := rows.Scan(&task.ID, &task.Name)
+		if err != nil {
+			log.Fatal("Error scanning task: ", err)
+		}
+		fmt.Printf("ID: %d, Task: %s\n", task.ID, task.Name)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Fatal("Error during row iteration: ", err)
 	}
 }
