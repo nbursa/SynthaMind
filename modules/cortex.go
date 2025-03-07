@@ -10,56 +10,47 @@ import (
 	"time"
 )
 
+// CortexProcess processes tasks and integrates memory storage
 func CortexProcess(task utils.Task) {
 	fmt.Printf("🧠 Cortex Processing Task %d: %s\n", task.ID, task.Data)
 
-	// Convert task text to a vector
+	// 🔍 Step 1: Check if task exists in Hippocampus (memory)
+	memory := HippocampusRetrieve(task)
+	if memory != nil {
+		fmt.Println("🔁 Using past memory instead of reprocessing.")
+		return
+	}
+
+	// 🔹 Step 2: Convert task text to a vector
 	vector := GenerateVector(task.Data)
 
-	// Ensure ChromaDB collection exists and retrieve its ID
+	// 🔹 Step 3: Ensure ChromaDB collection exists
 	collectionID, err := chroma.EnsureChromaCollection()
 	if err != nil {
 		fmt.Println("❌ Skipping task processing due to ChromaDB unavailability.")
-		fmt.Println("📌 Debug Info: EnsureChromaCollection() Error →", err)
 		return
 	}
 
-	// Step 1️⃣: Retrieve similar knowledge from ChromaDB
-	similarTasks, err := chroma.SearchTaskInChroma(collectionID, vector, 3) // Pass collectionID
-	if err != nil {
-		fmt.Println("❌ Retrieval failed, skipping this step.")
-		fmt.Println("📌 Debug Info: SearchTaskInChroma() Error →", err)
-		return
-	}
-
-	// Step 2️⃣: If similar knowledge exists, print it
-	if len(similarTasks) > 0 {
-		fmt.Println("🔍 Similar knowledge found:")
-		for _, similar := range similarTasks {
-			fmt.Printf("📝 Similar Task: %s\n", similar.TaskName)
-		}
-	} else {
-		fmt.Println("❌ No similar knowledge found, storing new entry...")
-	}
-
-	// Step 3️⃣: Store the new knowledge in ChromaDB
-	err = chroma.AddTaskToChroma(collectionID, utils.TaskVector{ // Pass collectionID correctly
+	// 🔹 Step 4: Store new knowledge
+	err = chroma.AddTaskToChroma(collectionID, utils.TaskVector{
 		ID:       task.ID,
 		TaskName: task.Data,
 		Vector:   vector,
 	})
 	if err != nil {
 		fmt.Println("❌ Failed to store task in ChromaDB.")
-		fmt.Println("📌 Debug Info: AddTaskToChroma() Error →", err)
 		return
 	}
-	fmt.Println("✅ Task stored in memory (ChromaDB).")
+
+	// 🔹 Step 5: Store in Hippocampus memory
+	HippocampusStore(task)
+	fmt.Println("✅ New knowledge stored in Hippocampus.")
 }
 
 // GenerateVector converts text into a hashed float32 vector
 func GenerateVector(data string) []float32 {
 	hash := sha256.Sum256([]byte(data))
-	vector := make([]float32, 3) // Match the 3D placeholder size
+	vector := make([]float32, 3)
 
 	for i := 0; i < 3; i++ {
 		vector[i] = float32(binary.BigEndian.Uint32(hash[i*8 : (i+1)*8])) / 1e9

@@ -22,13 +22,31 @@ func main() {
 	// Start the autonomous CortexBase loop
 	go cortex.CortexBase()
 
+	// 🔹 Send test tasks that actually contain important keywords
+	testTasks := []string{
+		"System error detected",       // ✅ Matches "error"
+		"Memory usage warning",        // ✅ Matches "memory" & "warning"
+		"Critical update required",    // ✅ Matches "critical" & "update"
+		"Self-awareness data stored",  // ✅ Matches "self-awareness"
+		"Pattern recognition triggered", // ✅ Matches "pattern"
+	}
+
 	// Simulate incoming tasks
-	for i := 1; i <= 3; i++ {
+	// for i := 1; i <= 3; i++ {
+	// 	task := utils.Task{
+	// 		ID:   i,
+	// 		Data: fmt.Sprintf("New knowledge entry %d", i),
+	// 	}
+	// 	modules.ThalamusFilter(task) // Send task through the pipeline
+	// 	time.Sleep(3 * time.Second) // Simulate time between tasks
+	// }
+	// Send tasks through Thalamus
+	for i, taskText := range testTasks {
 		task := utils.Task{
-			ID:   i,
-			Data: fmt.Sprintf("New knowledge entry %d", i),
+			ID:   i + 1,
+			Data: taskText,
 		}
 		modules.ThalamusFilter(task) // Send task through the pipeline
-		time.Sleep(3 * time.Second) // Simulate time between tasks
+		time.Sleep(1 * time.Second) // Simulate time between tasks
 	}
 }
