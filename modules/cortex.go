@@ -56,12 +56,6 @@ func CortexProcess(task utils.Task) {
 	fmt.Println("✅ Task stored in memory (ChromaDB).")
 }
 
-// // GenerateVector converts text to a vector (placeholder)
-// func GenerateVector(data string) []float32 {
-// 	// Placeholder for real AI embedding model (later use OpenAI, BERT, etc.)
-// 	return []float32{0.1, 0.2, 0.3} // Temporary fixed vector
-// }
-
 // GenerateVector converts text into a hashed float32 vector
 func GenerateVector(data string) []float32 {
 	hash := sha256.Sum256([]byte(data))
