@@ -3,6 +3,7 @@ package cortex
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"os"
 	"runtime"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"evolvai/utils"
 
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
 )
 
@@ -25,56 +27,69 @@ func CortexBase() {
 	}
 }
 
-// // Analyze system state (memory, CPU, files, APIs)
-// func analyzeSystemState() {
-// 	var memStats runtime.MemStats
-// 	runtime.ReadMemStats(&memStats)
-
-// 	cpuUsage := getCPUUsage()
-// 	memoryUsage := memStats.Alloc / 1024 / 1024 // Convert bytes to MB
-
-// 	fmt.Printf("⚙️  System Check: CPU: %.2f%% | Memory: %dMB\n", cpuUsage, memoryUsage)
-
-// 	if cpuUsage > 90.0 || memoryUsage > 500 {
-// 		fmt.Println("🚨 WARNING: High system load! Taking preventive action...")
-// 		survivalMechanism()
-// 	}
-// }
-
-// // Mock CPU usage retrieval
-// func getCPUUsage() float64 {
-// 	return 30.0 // TODO: Implement actual CPU monitoring
-// }
-
+// Analyze system state by fetching multiple system metrics
 func analyzeSystemState() {
-    // Fetch CPU usage
-    cpuUsage, err := cpu.Percent(0, false)
-    if err != nil {
-        fmt.Println("❌ Error getting CPU usage:", err)
-        return
-    }
-    totalCPU := 0.0
-    for _, usage := range cpuUsage {
-        totalCPU += usage
-    }
-    avgCPU := totalCPU / float64(len(cpuUsage))
+	// Fetch CPU usage
+	cpuUsage, err := cpu.Percent(0, false)
+	if err != nil {
+		fmt.Println("❌ Error getting CPU usage:", err)
+		return
+	}
+	totalCPU := 0.0
+	for _, usage := range cpuUsage {
+		totalCPU += usage
+	}
+	avgCPU := totalCPU / float64(len(cpuUsage))
 
-    // Fetch memory usage
-    memoryStats, err := mem.VirtualMemory()
-    if err != nil {
-        fmt.Println("❌ Error getting memory usage:", err)
-        return
-    }
-    // memoryUsage := memoryStats.Used / 1024 / 1024 // Convert bytes to MB
+	// Fetch memory usage
+	memoryStats, err := mem.VirtualMemory()
+	if err != nil {
+		fmt.Println("❌ Error getting memory usage:", err)
+		return
+	}
 	memoryUsagePercent := memoryStats.UsedPercent
 
+	// Fetch available disk space
+	diskUsage, err := disk.Usage("/")
+	if err != nil {
+		fmt.Println("❌ Error getting disk usage:", err)
+		return
+	}
+	diskAvailablePercent := 100.0 - diskUsage.UsedPercent
 
-    fmt.Printf("⚙️  System Check: CPU: %.2f%% | Memory: %.2f%%\n", avgCPU, memoryUsagePercent)
+	// Check network latency to a common public DNS server (e.g., Google's 8.8.8.8)
+	networkLatency := getNetworkLatency("8.8.8.8:53")
+
+	// Mock CPU temperature
+	cpuTemperature := getTemperature() // Placeholder for actual temperature reading
+
+	fmt.Printf("⚙️  System Check: CPU: %.2f%% | Memory: %.2f%% | Disk Available: %.2f%% | Network Latency: %.2fms | CPU Temp: %.2f°C\n",
+		avgCPU, memoryUsagePercent, diskAvailablePercent, networkLatency, cpuTemperature)
 
 	if avgCPU > 90.0 || memoryUsagePercent > 90.0 {
 		fmt.Println("🚨 WARNING: High system load! Taking preventive action...")
 		survivalMechanism()
 	}
+}
+
+// Check network latency by measuring round-trip time
+func getNetworkLatency(server string) float64 {
+	start := time.Now()
+	conn, err := net.Dial("udp", server)
+	if err != nil {
+		fmt.Println("❌ Error checking network latency:", err)
+		return 0.0
+	}
+	defer conn.Close()
+
+	latency := time.Since(start).Seconds() * 1000 // Convert to milliseconds
+	return latency
+}
+
+// Mock function for CPU temperature
+func getTemperature() float64 {
+	// Placeholder: in a real implementation, read from a thermal sensor or system file
+	return 65.0 // Example: 65°C
 }
 
 // If the system is overloaded, take preventive actions
@@ -94,7 +109,7 @@ func storeSelfKnowledge() {
 	hostname, _ := os.Hostname()
 	metadata := map[string]interface{}{
 		"hostname": hostname,
-		"os":      runtime.GOOS,
+		"os":       runtime.GOOS,
 		"cpu":      runtime.NumCPU(),
 		"timestamp": time.Now().Format(time.RFC3339),
 	}
