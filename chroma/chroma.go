@@ -8,35 +8,37 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 )
 
-func EnsureChromaCollection() error {
+// EnsureChromaCollection checks if the ChromaDB collection exists and returns its ID.
+func EnsureChromaCollection() (string, error) {
 	url := "http://127.0.0.1:8000/api/v1/collections"
 
-	// Fetch list of collections
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("❌ Failed to fetch collections:", err)
-		return fmt.Errorf("failed to fetch collections: %w", err)
+		return "", fmt.Errorf("failed to fetch collections: %w", err)
 	}
 	defer resp.Body.Close()
 
-	// ChromaDB returns an **array**, not a map
-	var existingCollections []map[string]interface{} // ✅ Change to slice of maps
+	var existingCollections []map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&existingCollections); err != nil {
 		fmt.Println("❌ Failed to decode ChromaDB response:", err)
-		return fmt.Errorf("failed to decode collection response: %w", err)
+		return "", fmt.Errorf("failed to decode collection response: %w", err)
 	}
 
 	// Debugging: Print API response
 	fmt.Println("🔍 ChromaDB Collection Response:", existingCollections)
 
-	// Check if "tasks" collection is present
+	// Check if "tasks" collection exists
 	for _, col := range existingCollections {
 		if col["name"] == "tasks" {
-			fmt.Println("✅ ChromaDB collection 'tasks' exists.")
-			return nil // ✅ Collection exists, return success
+			collectionID, ok := col["id"].(string)
+			if !ok {
+				return "", fmt.Errorf("collection found but has no valid ID")
+			}
+			fmt.Println("✅ ChromaDB collection 'tasks' exists with ID:", collectionID)
+			return collectionID, nil
 		}
 	}
 
@@ -49,27 +51,31 @@ func EnsureChromaCollection() error {
 
 	resp, err = http.Post(createURL, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
-		return fmt.Errorf("failed to create collection: %w", err)
+		return "", fmt.Errorf("failed to create collection: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("ChromaDB collection creation error: %s", resp.Status)
+		return "", fmt.Errorf("ChromaDB collection creation error: %s", resp.Status)
 	}
 
-	fmt.Println("✅ ChromaDB collection 'tasks' created successfully.")
-	return nil
+	// Decode response to get the newly created collection ID
+	var createdCollection map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&createdCollection); err != nil {
+		return "", fmt.Errorf("failed to decode collection creation response: %w", err)
+	}
+
+	collectionID, ok := createdCollection["id"].(string)
+	if !ok {
+		return "", fmt.Errorf("created collection but could not retrieve ID")
+	}
+
+	fmt.Println("✅ ChromaDB collection 'tasks' created successfully with ID:", collectionID)
+	return collectionID, nil
 }
 
-func AddTaskToChroma(task utils.TaskVector) error {
-	// Ensure collection exists before inserting data
-	if err := EnsureChromaCollection(); err != nil {
-		return err
-	}
-
-	// Get ChromaDB collection ID instead of name
-	collectionID := "3f02fd34-386f-42d2-b4cb-de8215959b04" // Hardcoded for now, should be retrieved dynamically
-
+// AddTaskToChroma stores a task in ChromaDB
+func AddTaskToChroma(collectionID string, task utils.TaskVector) error {
 	url := "http://127.0.0.1:8000/api/v1/collections/" + collectionID + "/upsert"
 
 	payload, err := json.Marshal(map[string]interface{}{
@@ -105,15 +111,8 @@ func AddTaskToChroma(task utils.TaskVector) error {
 	return nil
 }
 
-func SearchTaskInChroma(queryVector []float32, topK int) ([]utils.TaskVector, error) {
-	// Ensure collection exists before searching
-	if err := EnsureChromaCollection(); err != nil {
-		return nil, err
-	}
-
-	// Use the correct collection ID (retrieved dynamically or hardcoded for now)
-	collectionID := "3f02fd34-386f-42d2-b4cb-de8215959b04" // 🔹 Replace "tasks" with the actual collection ID
-
+// SearchTaskInChroma finds similar tasks using vector search in ChromaDB
+func SearchTaskInChroma(collectionID string, queryVector []float32, topK int) ([]utils.TaskVector, error) {
 	url := "http://127.0.0.1:8000/api/v1/collections/" + collectionID + "/query"
 
 	payload, err := json.Marshal(map[string]interface{}{
@@ -135,7 +134,6 @@ func SearchTaskInChroma(queryVector []float32, topK int) ([]utils.TaskVector, er
 		return nil, err
 	}
 
-	// **Ensure required fields exist**
 	idsRaw, idsOk := result["ids"].([]interface{})
 	metadatasRaw, metaOk := result["metadatas"].([]interface{})
 
@@ -143,51 +141,31 @@ func SearchTaskInChroma(queryVector []float32, topK int) ([]utils.TaskVector, er
 		return nil, fmt.Errorf("ChromaDB response missing 'ids' or 'metadatas' fields: %v", result)
 	}
 
-	// **Extract nested lists**
-	idList, idListOk := idsRaw[0].([]interface{})
-	metadataList, metadataListOk := metadatasRaw[0].([]interface{})
-
-	if !idListOk || !metadataListOk {
-		return nil, fmt.Errorf("unexpected response format from ChromaDB")
-	}
-
 	tasks := []utils.TaskVector{}
-	for i := range idList {
-		metadataMap, ok := metadataList[i].(map[string]interface{})
-		if !ok {
-			log.Printf("⚠️ Warning: Unexpected metadata format: %v", metadataList[i])
+	for i := range idsRaw {
+		metadataArray, ok := metadatasRaw[i].([]interface{}) // 🔹 FIX: Expecting an array of maps
+		if !ok || len(metadataArray) == 0 {
+			fmt.Println("⚠️ Skipping task due to unexpected metadata structure:", metadatasRaw[i])
 			continue
 		}
 
-		taskName, ok := metadataMap["task_name"].(string)
+		metadata, ok := metadataArray[0].(map[string]interface{}) // 🔹 Extract first element
 		if !ok {
+			fmt.Println("⚠️ Skipping task due to invalid metadata format:", metadataArray)
+			continue
+		}
+
+		taskName, nameOk := metadata["task_name"].(string)
+		if !nameOk {
 			taskName = "Unknown"
 		}
 
 		tasks = append(tasks, utils.TaskVector{
-			ID:       i + 1, // Assigning a numerical ID
+			ID:       i + 1, // Assign a numerical ID
 			TaskName: taskName,
 			Vector:   queryVector,
 		})
 	}
 
 	return tasks, nil
-}
-
-// WaitForChromaDB actively checks if ChromaDB is ready
-func WaitForChromaDB() bool {
-	fmt.Println("⏳ Waiting for ChromaDB to be available...")
-
-	for i := 0; i < 5; i++ { // Try 5 times
-		resp, err := http.Get("http://127.0.0.1:8000/api/v1/heartbeat")
-		if err == nil && resp.StatusCode == 200 {
-			fmt.Println("✅ ChromaDB is ready!")
-			return true
-		}
-		fmt.Printf("⚠️ ChromaDB not available (attempt %d). Error: %v\n", i+1, err)
-		time.Sleep(2 * time.Second) // Wait before retrying
-	}
-
-	fmt.Println("❌ ChromaDB is still unavailable after retries.")
-	return false
 }
