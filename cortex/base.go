@@ -140,7 +140,6 @@ func discoverEnvironment() []string {
 	return discoveries
 }
 
-// storeSelfKnowledge saves environment data in ChromaDB
 func storeSelfKnowledge() {
 	collectionID, err := chroma.EnsureChromaCollection()
 	if err != nil {
@@ -168,6 +167,7 @@ func storeSelfKnowledge() {
 	}
 
 	fmt.Println("📤 Storing self-awareness data in ChromaDB:", string(payload))
+
 	err = chroma.AddTaskToChroma(collectionID, task)
 	if err != nil {
 		fmt.Println("❌ Failed to store data:", err)
