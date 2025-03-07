@@ -10,7 +10,6 @@ import (
 	"time"
 )
 
-// CortexProcess handles AI learning and memory
 func CortexProcess(task utils.Task) {
 	fmt.Printf("🧠 Cortex Processing Task %d: %s\n", task.ID, task.Data)
 
@@ -20,6 +19,7 @@ func CortexProcess(task utils.Task) {
 	// Ensure ChromaDB is ready before proceeding
 	if err := chroma.EnsureChromaCollection(); err != nil {
 		fmt.Println("❌ Skipping task processing due to ChromaDB unavailability.")
+		fmt.Println("📌 Debug Info: EnsureChromaCollection() Error →", err) // 🔍 Debugging Output
 		return
 	}
 
@@ -27,6 +27,7 @@ func CortexProcess(task utils.Task) {
 	similarTasks, err := chroma.SearchTaskInChroma(vector, 3) // Find top 3 similar tasks
 	if err != nil {
 		fmt.Println("❌ Retrieval failed, skipping this step.")
+		fmt.Println("📌 Debug Info: SearchTaskInChroma() Error →", err) // 🔍 Debugging Output
 		return
 	}
 
@@ -41,11 +42,16 @@ func CortexProcess(task utils.Task) {
 	}
 
 	// Step 3️⃣: Store the new knowledge in ChromaDB
-	chroma.AddTaskToChroma(utils.TaskVector{
+	err = chroma.AddTaskToChroma(utils.TaskVector{
 		ID:       task.ID,
 		TaskName: task.Data,
 		Vector:   vector, // Use generated vector
 	})
+	if err != nil {
+		fmt.Println("❌ Failed to store task in ChromaDB.")
+		fmt.Println("📌 Debug Info: AddTaskToChroma() Error →", err) // 🔍 Debugging Output
+		return
+	}
 	fmt.Println("✅ Task stored in memory (ChromaDB).")
 }
 
