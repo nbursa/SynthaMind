@@ -5,3 +5,9 @@ type Task struct {
     Data   string
     Vector []float32
 }
+
+type TaskVector struct {
+    ID       int
+    TaskName string
+    Vector   []float32
+}
