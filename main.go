@@ -1,6 +1,7 @@
 package main
 
 import (
+	"evolvai/cortex"
 	"evolvai/modules"
 	"evolvai/utils"
 	"fmt"
@@ -17,6 +18,9 @@ func main() {
 
 	// Start EvolvAI Task Manager
 	fmt.Println("🚀 EvolvAI Task Manager Starting...")
+
+	// Start the autonomous CortexBase loop
+	go cortex.CortexBase()
 
 	// Simulate incoming tasks
 	for i := 1; i <= 3; i++ {

@@ -74,8 +74,19 @@ func EnsureChromaCollection() (string, error) {
 	return collectionID, nil
 }
 
-// AddTaskToChroma stores a task in ChromaDB
 func AddTaskToChroma(collectionID string, task utils.TaskVector) error {
+	// 🔹 Step 1: Check if the task already exists
+	existingTasks, err := SearchTaskInChroma(collectionID, task.Vector, 1)
+	if err == nil && len(existingTasks) > 0 {
+		for _, existing := range existingTasks {
+			if existing.TaskName == task.TaskName {
+				fmt.Println("⚠️ Task already exists in ChromaDB, skipping storage:", task.TaskName)
+				return nil
+			}
+		}
+	}
+
+	// 🔹 Step 2: Proceed with storage if not found
 	url := "http://127.0.0.1:8000/api/v1/collections/" + collectionID + "/upsert"
 
 	payload, err := json.Marshal(map[string]interface{}{
@@ -143,13 +154,13 @@ func SearchTaskInChroma(collectionID string, queryVector []float32, topK int) ([
 
 	tasks := []utils.TaskVector{}
 	for i := range idsRaw {
-		metadataArray, ok := metadatasRaw[i].([]interface{}) // 🔹 FIX: Expecting an array of maps
+		metadataArray, ok := metadatasRaw[i].([]interface{})
 		if !ok || len(metadataArray) == 0 {
 			fmt.Println("⚠️ Skipping task due to unexpected metadata structure:", metadatasRaw[i])
 			continue
 		}
 
-		metadata, ok := metadataArray[0].(map[string]interface{}) // 🔹 Extract first element
+		metadata, ok := metadataArray[0].(map[string]interface{})
 		if !ok {
 			fmt.Println("⚠️ Skipping task due to invalid metadata format:", metadataArray)
 			continue
@@ -161,7 +172,7 @@ func SearchTaskInChroma(collectionID string, queryVector []float32, topK int) ([
 		}
 
 		tasks = append(tasks, utils.TaskVector{
-			ID:       i + 1, // Assign a numerical ID
+			ID:       i + 1,
 			TaskName: taskName,
 			Vector:   queryVector,
 		})
