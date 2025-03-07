@@ -69,6 +69,12 @@ EvolvAI is **not yet an AI agent**, but the roadmap includes:
 
    - EvolvAI should **adjust its own learning strategies over time**, improving **exploration efficiency**.
 
+✔ Cortex (Core Intelligence System) – Handles survival, adaptation, and basic learning.
+✔ Curiosity & Exploration Mechanism – Allows self-driven discovery.
+✔ Memory System – Retains and forgets information efficiently.
+✔ Basic Prioritization System – Ensures relevant knowledge is retained while unnecessary details fade.
+✔ Tutor-Guided Learning (Early Stage) – EvolvAI asks for help when absolutely necessary.
+
 ---
 
 ## **🛠️ How to Use**
