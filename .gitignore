@@ -1,1 +1,36 @@
+# 🔒 Ignore environment files (credentials, secrets)
 .env
+.env.local
+.env.development
+.env.production
+
+# 🔹 Ignore compiled Go binaries
+*.exe
+*.out
+*.o
+*.a
+
+# 🔹 Ignore dependency directories (Go modules & Python)
+vendor/
+bin/
+obj/
+venv/
+
+# 🔹 Ignore database and data files
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.csv
+*.json
+
+# 🔹 Ignore ChromaDB files
+chromadb_data/
+
+# 🔹 Ignore macOS system files
+.DS_Store
+
+# 🔹 Ignore VSCode settings
+.vscode/
+
+knowledge.db

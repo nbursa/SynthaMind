@@ -2,105 +2,116 @@ package main
 
 import (
 	"database/sql"
+	"encoding/binary"
 	"fmt"
 	"log"
+	"math"
 	"time"
+
+	"evolvai/taskmanager"
+	"evolvai/utils"
 
 	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var db *sql.DB
+func insertData(db *sql.DB) {
+	tasks := []utils.Task{
+		{Data: "Sample task 1", Vector: []float32{0.1, 0.2, 0.3}},
+		{Data: "Sample task 2", Vector: []float32{0.4, 0.5, 0.6}},
+		{Data: "Sample task 3", Vector: []float32{0.7, 0.8, 0.9}},
+	}
 
-type Task struct {
-	ID      int
-	Name    string
-	Vector  []byte
+	for _, task := range tasks {
+		// Check if task already exists to prevent duplicates
+		var exists bool
+		err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM tasks WHERE task_name = ?)", task.Data).Scan(&exists)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if exists {
+			fmt.Printf("⚠️ Task '%s' already exists, skipping insertion.\n", task.Data)
+			continue
+		}
+
+		// Convert float32 slice to binary BLOB
+		vectorBytes := make([]byte, len(task.Vector)*4)
+		for i, v := range task.Vector {
+			binary.LittleEndian.PutUint32(vectorBytes[i*4:], math.Float32bits(v))
+		}
+
+		// Insert task with binary vector
+		_, err = db.Exec("INSERT INTO tasks (task_name, vector) VALUES (?, ?)", task.Data, vectorBytes)
+		if err != nil {
+			log.Fatal(err)
+		}
+		utils.LogInfo(fmt.Sprintf("🟢 Task '%s' inserted into database", task.Data))
+	}
 }
 
-func init() {
-	// Load environment variables
-	err := godotenv.Load()
+func fetchTasks(db *sql.DB) {
+	rows, err := db.Query("SELECT id, task_name, vector FROM tasks")
 	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	// Connect to SQLite database
-	var errDb error
-	db, errDb = sql.Open("sqlite3", "./knowledge.db")
-	if errDb != nil {
-		log.Fatal("Failed to connect to database: ", errDb)
-	}
-
-	// Create the table for tasks
-	_, errDb = db.Exec(`
-		CREATE TABLE IF NOT EXISTS tasks (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			task_name TEXT,
-			vector BLOB
-		);
-	`)
-	if errDb != nil {
-		log.Fatal("Error creating table: ", errDb)
-	}
-}
-
-func main() {
-	// Start task manager
-	fmt.Println("🚀 EvolvAI Task Manager Starting...")
-	go startTaskManager()
-
-	// Simulate incoming knowledge tasks
-	for i := 0; i < 3; i++ {
-		taskName := fmt.Sprintf("Sample task %d", i+1)
-		insertTask(taskName, []byte{0x01, 0x02, 0x03, 0x04}) // Example vector data
-		time.Sleep(2 * time.Second)
-	}
-
-	// Fetch all tasks from the database
-	fetchTasks()
-}
-
-// Function to start task manager (for now just a print statement)
-func startTaskManager() {
-	fmt.Println("🧠 Task Manager Running...")
-}
-
-// Function to insert a task into the database
-func insertTask(taskName string, vector []byte) {
-	statement, err := db.Prepare("INSERT INTO tasks (task_name, vector) VALUES (?, ?)")
-	if err != nil {
-		log.Fatal("Error preparing statement: ", err)
-	}
-	defer statement.Close()
-
-	_, err = statement.Exec(taskName, vector)
-	if err != nil {
-		log.Fatal("Error inserting task: ", err)
-	}
-
-	fmt.Printf("🟢 Task '%s' inserted into database\n", taskName)
-}
-
-// Function to fetch all tasks from the database
-func fetchTasks() {
-	rows, err := db.Query("SELECT id, task_name FROM tasks")
-	if err != nil {
-		log.Fatal("Error fetching tasks: ", err)
+		log.Fatal(err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var task Task
-		err := rows.Scan(&task.ID, &task.Name)
+		var taskID int
+		var taskName string
+		var vectorData []byte
+
+		err := rows.Scan(&taskID, &taskName, &vectorData)
 		if err != nil {
-			log.Fatal("Error scanning task: ", err)
+			log.Fatal(err)
 		}
-		fmt.Printf("ID: %d, Task: %s\n", task.ID, task.Name)
+
+		// Convert binary BLOB back to []float32
+		vector := make([]float32, len(vectorData)/4)
+		for i := range vector {
+			vector[i] = math.Float32frombits(binary.LittleEndian.Uint32(vectorData[i*4:]))
+		}
+
+		fmt.Printf("📝 Task ID: %d, Task Name: %s, Vector: %v\n", taskID, taskName, vector)
+	}
+}
+
+func main() {
+	// Load environment variables
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
-	err = rows.Err()
+	// Database setup (SQLite example)
+	database, err := sql.Open("sqlite3", "./knowledge.db")
 	if err != nil {
-		log.Fatal("Error during row iteration: ", err)
+		log.Fatal(err)
+	}
+	defer database.Close()
+
+	// Ensure the 'tasks' table exists
+	_, err = database.Exec(`CREATE TABLE IF NOT EXISTS tasks (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		task_name TEXT,
+		vector BLOB
+	);`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Insert example data
+	insertData(database)
+
+	// Fetch tasks from the database to verify
+	fetchTasks(database)
+
+	// Start task manager
+	fmt.Println("🚀 EvolvAI Task Manager Starting...")
+	go taskmanager.StartTaskManager()
+
+	// Simulate incoming knowledge tasks
+	for {
+		taskmanager.AddTask("New knowledge detected")
+		time.Sleep(5 * time.Second)
 	}
 }

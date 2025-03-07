@@ -1,7 +1,7 @@
 package utils
 
-// Task structure for AI processing
 type Task struct {
-	ID   int
-	Data string
+    ID     int
+    Data   string
+    Vector []float32
 }
