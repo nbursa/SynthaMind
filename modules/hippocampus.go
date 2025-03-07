@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"evolvai/chroma"
 	"evolvai/utils"
 	"fmt"
 	"time"
@@ -47,10 +48,10 @@ func HippocampusRetrieve(task utils.Task) *utils.Task {
 	return nil
 }
 
-// Cleanup short-term memory by keeping only the last N tasks
+// Cleanup short-term memory by moving expired tasks to Neocortex (ChromaDB)
 func cleanupShortTermMemory() {
 	if len(memoryStorage) > maxShortTermMemory {
-		fmt.Println("🧹 Hippocampus Cleanup: Removing oldest tasks...")
+		fmt.Println("🧹 Hippocampus Cleanup: Moving old memories to Neocortex...")
 
 		// Find the oldest task
 		var oldestID int
@@ -63,10 +64,40 @@ func cleanupShortTermMemory() {
 			}
 		}
 
-		// Remove oldest task
+		// Move oldest task to Neocortex before deleting
 		if oldestID != 0 {
+			oldestTask := memoryStorage[oldestID].Task
+			NeocortexStore(oldestTask) // Store in Long-Term Memory
 			delete(memoryStorage, oldestID)
-			fmt.Printf("🗑️ Removed Task %d from short-term memory (expired)\n", oldestID)
+			fmt.Printf("🗑️ Moved Task %d to Neocortex and removed from short-term memory.\n", oldestID)
 		}
 	}
+}
+
+// NeocortexStore moves long-term knowledge into ChromaDB
+func NeocortexStore(task utils.Task) {
+	fmt.Printf("💾 Moving Task %d to Neocortex (Long-Term Memory): %s\n", task.ID, task.Data)
+
+	// Ensure ChromaDB collection exists
+	collectionID, err := chroma.EnsureChromaCollection()
+	if err != nil {
+		fmt.Println("❌ Failed to connect to ChromaDB for Long-Term Memory.")
+		return
+	}
+
+	// Convert task to vector
+	vector := GenerateVector(task.Data)
+
+	// Store in ChromaDB
+	err = chroma.AddTaskToChroma(collectionID, utils.TaskVector{
+		ID:       task.ID,
+		TaskName: task.Data,
+		Vector:   vector,
+	})
+	if err != nil {
+		fmt.Println("❌ Failed to store task in Neocortex (ChromaDB).")
+		return
+	}
+
+	fmt.Println("✅ Task successfully stored in Neocortex (Long-Term Memory).")
 }
