@@ -30,15 +30,6 @@ func main() {
 		"Pattern recognition triggered", // ✅ Matches "pattern"
 	}
 
-	// Simulate incoming tasks
-	// for i := 1; i <= 3; i++ {
-	// 	task := utils.Task{
-	// 		ID:   i,
-	// 		Data: fmt.Sprintf("New knowledge entry %d", i),
-	// 	}
-	// 	modules.ThalamusFilter(task) // Send task through the pipeline
-	// 	time.Sleep(3 * time.Second) // Simulate time between tasks
-	// }
 	// Send tasks through Thalamus
 	for i, taskText := range testTasks {
 		task := utils.Task{

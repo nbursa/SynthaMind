@@ -74,19 +74,8 @@ func EnsureChromaCollection() (string, error) {
 	return collectionID, nil
 }
 
+// AddTaskToChroma stores a task in ChromaDB
 func AddTaskToChroma(collectionID string, task utils.TaskVector) error {
-	// 🔹 Step 1: Check if the task already exists
-	existingTasks, err := SearchTaskInChroma(collectionID, task.Vector, 1)
-	if err == nil && len(existingTasks) > 0 {
-		for _, existing := range existingTasks {
-			if existing.TaskName == task.TaskName {
-				fmt.Println("⚠️ Task already exists in ChromaDB, skipping storage:", task.TaskName)
-				return nil
-			}
-		}
-	}
-
-	// 🔹 Step 2: Proceed with storage if not found
 	url := "http://127.0.0.1:8000/api/v1/collections/" + collectionID + "/upsert"
 
 	payload, err := json.Marshal(map[string]interface{}{
