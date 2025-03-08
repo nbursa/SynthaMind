@@ -1,7 +1,3 @@
-Here’s the **fully formatted `CONTRIBUTING.md`** file, properly structured:
-
----
-
 # **Contributing to SynthaMind**
 
 Thank you for considering contributing to **SynthaMind**! 🚀
@@ -38,6 +34,29 @@ Thank you for considering contributing to **SynthaMind**! 🚀
    git push origin feature-branch-name
    ```
 5. **Submit a pull request for review**
+
+## 🛠️ **Running ChromaDB Locally**
+
+To run **ChromaDB** locally for storing and retrieving vector data, follow these steps:
+
+1. **Ensure Python 3.7+ and pip are installed** on your machine.
+2. **Install ChromaDB** (if not already installed) by running:
+   ```bash
+   pip install chromadb
+   ```
+3. **Start ChromaDB server**:
+
+   ```bash
+   uvicorn chromadb.app:app --host 127.0.0.1 --port 8000
+   ```
+
+   This will start the ChromaDB server on `http://127.0.0.1:8000`. Ensure the server is running before interacting with it.
+
+4. **Verify server status**:
+   You can verify if ChromaDB is running by navigating to `http://127.0.0.1:8000` in your browser or using a tool like `curl`:
+   ```bash
+   curl http://127.0.0.1:8000/api/v1
+   ```
 
 ## 📩 **Contact**
 
