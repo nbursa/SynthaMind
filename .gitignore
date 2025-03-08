@@ -50,3 +50,9 @@ chromadb_data/*
 # Build files
 knowledge.db
 evolvai_project.zip
+
+# Ignore logs
+logs/
+logs/*.log
+tests/logs/
+tests/logs/*.log
