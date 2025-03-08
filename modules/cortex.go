@@ -84,6 +84,9 @@ func CortexProcess(task utils.Task) {
 	// Store task in memory
 	HippocampusStore(task)
 	fmt.Println("✅ New knowledge stored in Hippocampus.")
+
+	// 🟢 NEW: Execute task action
+	Executor(task)
 }
 
 // Analyze system state by fetching multiple system metrics
