@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"evolvai/agents"
-	"evolvai/modules"
 	"evolvai/utils"
 )
 
@@ -20,10 +19,11 @@ var taskCounter int
 const taskExpiry = 5 * time.Minute
 
 // ✅ Initialize AI Agents correctly
-var amygdalaAgent = agents.NewAmygdalaAgent(modules.AmygdalaAnalyze)
+var amygdalaAgent = agents.NewAmygdalaAgent()  
 var thalamusAgent = agents.NewThalamusAgent()
 var cortexAgent = agents.NewCortexAgent()
 var executorAgent = agents.NewExecutorAgent()
+var hippocampusAgent = agents.NewHippocampusAgent()
 
 // StartTaskManager initializes AI task processing
 func StartTaskManager() {
@@ -42,6 +42,9 @@ func AddTask(data string) {
 
 	// ✅ Assign priority using Amygdala AI Agent
 	amygdalaAgent.ProcessTask(&newTask)
+
+	// ✅ Store task in HippocampusAgent
+	hippocampusAgent.ProcessTask(&newTask) 
 
 	// Add task to queue
 	taskQueue = append(taskQueue, newTask)
@@ -78,6 +81,8 @@ func processTasks() {
 			// ✅ Pass task to AI Agents
 			go thalamusAgent.ProcessTask(task.Data)
 			go amygdalaAgent.ProcessTask(&task)
+			go hippocampusAgent.ProcessTask(&task) 
+			go cortexAgent.ProcessTask(task.Data)  // ✅ Now properly used
 			go executorAgent.ProcessTask(task.Data)
 
 			// Simulate processing delay
