@@ -32,7 +32,7 @@ func processTasks() {
 		fmt.Printf("🟢 Processing Task %d: %s\n", task.ID, task.Data)
 
 		go modules.ThalamusFilter(task)
-		go modules.AmygdalaAnalyze(task)
+		go modules.AmygdalaAnalyze(&task)
 
 		time.Sleep(2 * time.Second)
 	}
