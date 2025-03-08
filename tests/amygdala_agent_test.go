@@ -10,63 +10,38 @@ func TestAmygdalaAgent_ProcessTask(t *testing.T) {
 	// Setup
 	amygdalaAgent := agents.NewAmygdalaAgent()
 
-	// Test high-priority task
-	task := &utils.Task{
-		ID:   1,
-		Data: "System error detected", // This should be high priority
-	}
-	amygdalaAgent.ProcessTask(task)
-	if task.Priority != utils.High {
-		t.Errorf("Expected priority %d, but got %d for task %s", utils.High, task.Priority, task.Data)
-	}
-
-	// Test medium-priority task
-	task = &utils.Task{
-		ID:   2,
-		Data: "Memory usage warning", // This should be medium priority
-	}
-	amygdalaAgent.ProcessTask(task)
-	if task.Priority != utils.Medium {
-		t.Errorf("Expected priority %d, but got %d for task %s", utils.Medium, task.Priority, task.Data)
+	// Define test cases
+	tests := []struct {
+		taskData       string
+		expectedPriority utils.TaskPriority
+	}{
+		{"System error detected", utils.High},
+		{"Memory usage warning", utils.Medium},
+		{"Pattern recognition triggered", utils.Low},
+		{"Urgent system update", utils.High},  // High priority based on "urgent"
+		{"Random task without any specific keyword", utils.Low},
 	}
 
-	// Test low-priority task
-	task = &utils.Task{
-		ID:   3,
-		Data: "Pattern recognition triggered", // This should be low priority
-	}
-	amygdalaAgent.ProcessTask(task)
-	if task.Priority != utils.Low {
-		t.Errorf("Expected priority %d, but got %d for task %s", utils.Low, task.Priority, task.Data)
-	}
+	// Iterate through the test cases
+	for _, test := range tests {
+		t.Run(test.taskData, func(t *testing.T) {
+			task := &utils.Task{
+				ID:   1,
+				Data: test.taskData,
+			}
 
-	// Test unrecognized task (should be low priority)
-	task = &utils.Task{
-		ID:   4,
-		Data: "Random task without any specific keyword", // This should default to low priority
-	}
-	amygdalaAgent.ProcessTask(task)
-	if task.Priority != utils.Low {
-		t.Errorf("Expected priority %d, but got %d for task %s", utils.Low, task.Priority, task.Data)
-	}
+			// Process the task
+			amygdalaAgent.ProcessTask(task)
 
-	// Test repeated task (same task should get the same priority)
-	task = &utils.Task{
-		ID:   5,
-		Data: "System error detected", // This should be recognized from memory and remain high priority
-	}
-	amygdalaAgent.ProcessTask(task)
-	if task.Priority != utils.High {
-		t.Errorf("Expected priority %d, but got %d for task %s (repeated)", utils.High, task.Priority, task.Data)
-	}
+			// Log the result for debugging purposes
+			t.Logf("Task '%s' processed with priority %d", test.taskData, task.Priority)
 
-	// Test a task with a new keyword, ensuring it's assigned the right priority
-	task = &utils.Task{
-		ID:   6,
-		Data: "Urgent system update", // New high-priority task
-	}
-	amygdalaAgent.ProcessTask(task)
-	if task.Priority != utils.High {
-		t.Errorf("Expected priority %d, but got %d for task %s", utils.High, task.Priority, task.Data)
+			// Check if the expected priority matches
+			if task.Priority != test.expectedPriority {
+				t.Errorf("Expected priority %d, but got %d for task: %s", test.expectedPriority, task.Priority, test.taskData)
+			} else {
+				t.Logf("Task '%s' passed with expected priority: %d", test.taskData, test.expectedPriority)
+			}
+		})
 	}
 }

@@ -36,34 +36,7 @@ func (a *AmygdalaAgent) ProcessTask(task *utils.Task) {
 	}
 }
 
-// // ✅ Task Analysis Logic (now adaptive)
-// func (a *AmygdalaAgent) analyzeTask(task *utils.Task) {
-// 	// Convert task data to lowercase for case-insensitive comparison
-// 	taskData := strings.ToLower(task.Data)
-
-// 	// Assign priority based on keywords
-// 	switch {
-// 	case strings.Contains(taskData, "error"),
-// 		strings.Contains(taskData, "critical"):
-// 		task.Priority = utils.High
-// 		fmt.Println("🔴 Task is critical! Assigning high priority.")
-// 	case strings.Contains(taskData, "update"),
-// 		strings.Contains(taskData, "memory"):
-// 		task.Priority = utils.Medium
-// 		fmt.Println("🟠 Task is a warning or update. Assigning medium priority.")
-// 	case strings.Contains(taskData, "self-awareness"),
-// 		strings.Contains(taskData, "pattern"):
-// 		task.Priority = utils.Low
-// 		fmt.Println("🟢 Task is low priority (e.g., self-awareness).")
-// 	default:
-// 		// Default case for unknown tasks
-// 		task.Priority = utils.Low
-// 		fmt.Println("🟢 Task is not recognized. Assigning low priority.")
-// 	}
-
-// 	// Log the decision made by Amygdala
-// 	fmt.Printf("🔹 AI Amygdala assigned priority %d to Task %d\n", task.Priority, task.ID)
-// }
+// ✅ Task Analysis Logic (adaptive)
 func (a *AmygdalaAgent) analyzeTask(task *utils.Task) {
 	// Convert task data to lowercase for case-insensitive comparison
 	taskData := strings.ToLower(task.Data)
