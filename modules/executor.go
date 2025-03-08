@@ -1,9 +1,9 @@
 package modules
 
 import (
-	"evolvai/utils"
 	"fmt"
 	"strings"
+	"synthamind/utils"
 )
 
 // Executor handles task execution based on the task type.

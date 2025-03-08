@@ -1,9 +1,9 @@
 package modules
 
 import (
-	"evolvai/utils"
 	"fmt"
 	"strings"
+	"synthamind/utils"
 )
 
 // ThalamusFilter acts as a sensory gate, filtering and prioritizing incoming tasks.

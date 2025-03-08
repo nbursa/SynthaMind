@@ -1,9 +1,9 @@
 package agents
 
 import (
-	"evolvai/chroma"
-	"evolvai/utils"
 	"fmt"
+	"synthamind/chroma"
+	"synthamind/utils"
 )
 
 // HippocampusAgent manages memory-related operations.

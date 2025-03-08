@@ -3,11 +3,11 @@ package chroma
 import (
 	"bytes"
 	"encoding/json"
-	"evolvai/utils"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"synthamind/utils"
 )
 
 // EnsureChromaCollection checks if the ChromaDB collection exists and returns its ID.

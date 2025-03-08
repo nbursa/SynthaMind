@@ -1,9 +1,9 @@
 package modules
 
 import (
-	"evolvai/utils"
 	"fmt"
 	"strings"
+	"synthamind/utils"
 )
 
 // AmygdalaAnalyze assigns priority levels to tasks

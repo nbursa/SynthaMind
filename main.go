@@ -4,10 +4,10 @@
 package main
 
 import (
-	"evolvai/taskmanager"
-	"evolvai/utils"
 	"fmt"
 	"os"
+	"synthamind/taskmanager"
+	"synthamind/utils"
 	"time"
 )
 

@@ -1,8 +1,8 @@
 package modules
 
 import (
-	"evolvai/utils"
 	"fmt"
+	"synthamind/utils"
 	"time"
 )
 

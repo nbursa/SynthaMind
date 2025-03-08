@@ -5,8 +5,8 @@ import (
 	"sort"
 	"time"
 
-	"evolvai/agents"
-	"evolvai/utils"
+	"synthamind/agents"
+	"synthamind/utils"
 )
 
 // Task queue (for AI task processing)
@@ -52,6 +52,8 @@ func AddTask(data string) {
 
 	// ✅ Store task in HippocampusAgent
 	hippocampusAgent.ProcessTask(&newTask)
+
+	cortexAgent.ProcessTask(&newTask)
 
 	// Add task to queue
 	taskQueue = append(taskQueue, newTask)

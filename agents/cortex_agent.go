@@ -1,10 +1,10 @@
 package agents
 
 import (
-	"evolvai/utils"
 	"fmt"
 	"math"
 	"strings"
+	"synthamind/utils"
 )
 
 // CortexAgent is responsible for higher-level cognitive processing.

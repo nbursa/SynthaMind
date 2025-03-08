@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"evolvai/chroma"
-	"evolvai/utils"
+	"synthamind/chroma"
+	"synthamind/utils"
 
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"

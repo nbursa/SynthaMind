@@ -1,9 +1,9 @@
 package agents
 
 import (
-	"evolvai/utils"
 	"fmt"
 	"strings"
+	"synthamind/utils"
 )
 
 // AmygdalaAgent specializes in analyzing and prioritizing tasks.

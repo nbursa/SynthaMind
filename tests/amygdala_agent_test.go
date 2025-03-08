@@ -2,8 +2,8 @@
 package tests
 
 import (
-	"evolvai/agents"
-	"evolvai/utils"
+	"synthamind/agents"
+	"synthamind/utils"
 	"testing"
 )
 

@@ -1,9 +1,9 @@
 package agents
 
 import (
-	"evolvai/utils"
 	"fmt"
 	"strings"
+	"synthamind/utils"
 )
 
 // ThalamusAgent filters sensory data and determines task importance.
