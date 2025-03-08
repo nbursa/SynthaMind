@@ -16,7 +16,7 @@ var taskQueue []utils.Task
 var taskCounter int
 
 // Expiry duration for tasks
-const taskExpiry = 5 * time.Minute // ✅ Tasks expire after 5 minutes
+const taskExpiry = 5 * time.Minute
 
 // StartTaskManager initializes AI task processing
 func StartTaskManager() {
@@ -30,7 +30,7 @@ func AddTask(data string) {
 	newTask := utils.Task{
 		ID:        taskCounter,
 		Data:      data,
-		Timestamp: time.Now(), // ✅ Set creation time
+		Timestamp: time.Now(),
 	}
 
 	// Assign priority using Amygdala
@@ -44,7 +44,7 @@ func AddTask(data string) {
 		return taskQueue[i].Priority > taskQueue[j].Priority
 	})
 
-	// ✅ Print updated queue for debugging
+	// Print updated queue for debugging
 	printTaskQueue()
 }
 
@@ -65,6 +65,7 @@ func processTasks() {
 			task := taskQueue[0]
 			taskQueue = taskQueue[1:] // Remove first task from queue
 
+			startTime := time.Now()
 			fmt.Printf("🟢 Processing Task %d (Priority: %d): %s\n", task.ID, task.Priority, task.Data)
 
 			go modules.ThalamusFilter(task)
@@ -72,9 +73,12 @@ func processTasks() {
 			go modules.Executor(task)
 
 			// Simulate processing delay
-			taskDuration := time.Since(task.Timestamp) // ✅ Calculate execution delay
+			taskDuration := time.Since(startTime) // ✅ Calculate execution delay
 			fmt.Printf("⏳ Task %d executed in %v\n", task.ID, taskDuration)
 			fmt.Printf("📊 Remaining Tasks in Queue: %d\n", len(taskQueue))
+
+			// ✅ Log task execution
+			utils.LogTaskExecution(task, taskDuration)
 
 			time.Sleep(2 * time.Second)
 		} else {
@@ -93,6 +97,7 @@ func removeExpiredTasks() {
 			filteredQueue = append(filteredQueue, task) // Keep valid tasks
 		} else {
 			fmt.Printf("🗑️ Expired Task Removed: %d (%s)\n", task.ID, task.Data)
+			utils.LogTaskExpiry(task) // ✅ Log expiry
 		}
 	}
 
