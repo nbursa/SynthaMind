@@ -53,23 +53,25 @@ func cleanupShortTermMemory() {
 	if len(memoryStorage) > maxShortTermMemory {
 		fmt.Println("🧹 Hippocampus Cleanup: Moving old memories to Neocortex...")
 
-		// Find the oldest task
-		var oldestID int
+		// Find the **lowest-priority** and **oldest** task
+		var lowestPriorityTaskID int
+		var lowestPriority utils.TaskPriority = utils.High
 		var oldestTime time.Time
 
 		for id, entry := range memoryStorage {
-			if oldestTime.IsZero() || entry.Timestamp.Before(oldestTime) {
-				oldestID = id
+			if oldestTime.IsZero() || entry.Timestamp.Before(oldestTime) || entry.Task.Priority < lowestPriority {
+				lowestPriorityTaskID = id
+				lowestPriority = entry.Task.Priority
 				oldestTime = entry.Timestamp
 			}
 		}
 
-		// Move oldest task to Neocortex before deleting
-		if oldestID != 0 {
-			oldestTask := memoryStorage[oldestID].Task
-			NeocortexStore(oldestTask) // Store in Long-Term Memory
-			delete(memoryStorage, oldestID)
-			fmt.Printf("🗑️ Moved Task %d to Neocortex and removed from short-term memory.\n", oldestID)
+		// Move task to long-term storage
+		if lowestPriorityTaskID != 0 {
+			oldTask := memoryStorage[lowestPriorityTaskID].Task
+			NeocortexStore(oldTask) // Move to Long-Term Memory
+			delete(memoryStorage, lowestPriorityTaskID)
+			fmt.Printf("🗑️ Moved Task %d to Neocortex (long-term) and removed from short-term memory.\n", lowestPriorityTaskID)
 		}
 	}
 }

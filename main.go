@@ -22,13 +22,22 @@ func main() {
 	go modules.CortexBase()
 
 	// 🔹 Send test tasks that actually contain important keywords
+	// testTasks := []string{
+	// 	"System error detected",       // ✅ Matches "error"
+	// 	"Memory usage warning",        // ✅ Matches "memory" & "warning"
+	// 	"Critical update required",    // ✅ Matches "critical" & "update"
+	// 	"Self-awareness data stored",  // ✅ Matches "self-awareness"
+	// 	"Pattern recognition triggered", // ✅ Matches "pattern"
+	// }
+
 	testTasks := []string{
-		"System error detected",       // ✅ Matches "error"
-		"Memory usage warning",        // ✅ Matches "memory" & "warning"
-		"Critical update required",    // ✅ Matches "critical" & "update"
-		"Self-awareness data stored",  // ✅ Matches "self-awareness"
-		"Pattern recognition triggered", // ✅ Matches "pattern"
+		"Critical update required", "System error detected", "Memory usage warning",
+		"Self-awareness data stored", "Pattern recognition triggered",
+		"Disk space low warning", "High CPU temperature detected",
+		"Network latency spike detected", "Filesystem corruption warning",
+		"GPU overheating alert", "Unexpected power failure detected",
 	}
+	
 
 	// Send tasks through Thalamus
 	for i, taskText := range testTasks {
