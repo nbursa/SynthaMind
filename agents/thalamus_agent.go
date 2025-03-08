@@ -27,8 +27,10 @@ func (a *ThalamusAgent) ProcessTask(task *utils.Task) {
 
 	// ✅ Check if task is important using dynamic learning
 	if a.isImportant(task.Data) {
+		task.Priority = utils.High // ✅ Assign high priority if task is important
 		fmt.Println("✅ Task is important! Passing to Cortex...")
 	} else {
+		task.Priority = utils.Low // ✅ Assign low priority if task is not important
 		fmt.Println("🚫 Task is NOT important. Discarding.")
 	}
 }
