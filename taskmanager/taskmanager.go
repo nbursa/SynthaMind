@@ -19,15 +19,22 @@ var taskCounter int
 const taskExpiry = 5 * time.Minute
 
 // ✅ Initialize AI Agents correctly
-var amygdalaAgent = agents.NewAmygdalaAgent()  
-var thalamusAgent = agents.NewThalamusAgent()
-var cortexAgent = agents.NewCortexAgent()
-var executorAgent = agents.NewExecutorAgent()
 var hippocampusAgent = agents.NewHippocampusAgent()
+var cortexAgent = agents.NewCortexAgent(hippocampusAgent) // 🔥 Cortex now learns from memory!
+var amygdalaAgent = agents.NewAmygdalaAgent()
+var thalamusAgent = agents.NewThalamusAgent()
+var executorAgent = agents.NewExecutorAgent()
 
 // StartTaskManager initializes AI task processing
 func StartTaskManager() {
 	fmt.Println("🧠 AI Task Manager Running...")
+
+	// ✅ Retrieve past tasks from HippocampusAgent (Long-Term Memory)
+	pastTasks, err := hippocampusAgent.RetrieveMemory("all")
+	if err == nil {
+		thalamusAgent.LearnFromMemory(pastTasks) // ✅ Thalamus learns from past tasks
+	}
+
 	go processTasks()
 }
 
@@ -44,7 +51,7 @@ func AddTask(data string) {
 	amygdalaAgent.ProcessTask(&newTask)
 
 	// ✅ Store task in HippocampusAgent
-	hippocampusAgent.ProcessTask(&newTask) 
+	hippocampusAgent.ProcessTask(&newTask)
 
 	// Add task to queue
 	taskQueue = append(taskQueue, newTask)
@@ -62,10 +69,8 @@ func AddTask(data string) {
 func processTasks() {
 	for {
 		if len(taskQueue) > 0 {
-			// ✅ Check for expired tasks before processing
-			removeExpiredTasks()
+			removeExpiredTasks() // ✅ Remove expired tasks before processing
 
-			// If queue is empty after expiry check, continue
 			if len(taskQueue) == 0 {
 				time.Sleep(1 * time.Second)
 				continue
@@ -73,26 +78,29 @@ func processTasks() {
 
 			// Process next task
 			task := taskQueue[0]
-			taskQueue = taskQueue[1:] // Remove first task from queue
+			taskQueue = taskQueue[1:] // Remove from queue
 
 			startTime := time.Now()
 			fmt.Printf("🟢 Processing Task %d (Priority: %d): %s\n", task.ID, task.Priority, task.Data)
 
-			// ✅ Pass task to AI Agents
-			go thalamusAgent.ProcessTask(task.Data)
-			go amygdalaAgent.ProcessTask(&task)
-			go hippocampusAgent.ProcessTask(&task) 
-			go cortexAgent.ProcessTask(task.Data)  // ✅ Now properly used
-			go executorAgent.ProcessTask(task.Data)
+			// ✅ Step 1: Thalamus filters the task first
+			thalamusAgent.ProcessTask(&task)
+
+			// ✅ Step 2: If task passes, Amygdala prioritizes it
+			amygdalaAgent.ProcessTask(&task)
+
+			// ✅ Step 3: Cortex processes task memory & reasoning
+			cortexAgent.ProcessTask(&task) // 🔥 Now Cortex learns from past tasks!
+
+			// ✅ Step 4: Executor performs final execution
+			executorAgent.ProcessTask(task.Data)
 
 			// Simulate processing delay
-			taskDuration := time.Since(startTime) // ✅ Calculate execution delay
+			taskDuration := time.Since(startTime)
 			fmt.Printf("⏳ Task %d executed in %v\n", task.ID, taskDuration)
 			fmt.Printf("📊 Remaining Tasks in Queue: %d\n", len(taskQueue))
 
-			// ✅ Log task execution
 			utils.LogTaskExecution(task, taskDuration)
-
 			time.Sleep(2 * time.Second)
 		} else {
 			time.Sleep(1 * time.Second) // Wait before checking queue again
