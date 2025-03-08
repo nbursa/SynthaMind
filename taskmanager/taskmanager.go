@@ -21,7 +21,7 @@ const taskExpiry = 5 * time.Minute
 // ✅ Initialize AI Agents correctly
 var hippocampusAgent = agents.NewHippocampusAgent()
 var cortexAgent = agents.NewCortexAgent(hippocampusAgent)
-var amygdalaAgent = agents.NewAmygdalaAgent()  
+var amygdalaAgent = agents.NewAmygdalaAgent()
 var thalamusAgent = agents.NewThalamusAgent()
 var executorAgent = agents.NewExecutorAgent()
 
@@ -38,7 +38,6 @@ func StartTaskManager() {
 	go processTasks()
 }
 
-
 // AddTask adds new tasks to the system, prioritizing HIGH-priority tasks first
 func AddTask(data string) {
 	taskCounter++
@@ -52,7 +51,7 @@ func AddTask(data string) {
 	amygdalaAgent.ProcessTask(&newTask)
 
 	// ✅ Store task in HippocampusAgent
-	hippocampusAgent.ProcessTask(&newTask) 
+	hippocampusAgent.ProcessTask(&newTask)
 
 	// Add task to queue
 	taskQueue = append(taskQueue, newTask)
