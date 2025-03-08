@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	"evolvai/agents"
 	"evolvai/modules"
 	"evolvai/utils"
 )
@@ -17,6 +18,12 @@ var taskCounter int
 
 // Expiry duration for tasks
 const taskExpiry = 5 * time.Minute
+
+// ✅ Initialize AI Agents correctly
+var amygdalaAgent = agents.NewAmygdalaAgent(modules.AmygdalaAnalyze)
+var thalamusAgent = agents.NewThalamusAgent()
+var cortexAgent = agents.NewCortexAgent()
+var executorAgent = agents.NewExecutorAgent()
 
 // StartTaskManager initializes AI task processing
 func StartTaskManager() {
@@ -33,8 +40,8 @@ func AddTask(data string) {
 		Timestamp: time.Now(),
 	}
 
-	// Assign priority using Amygdala
-	modules.AmygdalaAnalyze(&newTask)
+	// ✅ Assign priority using Amygdala AI Agent
+	amygdalaAgent.ProcessTask(&newTask)
 
 	// Add task to queue
 	taskQueue = append(taskQueue, newTask)
@@ -68,9 +75,10 @@ func processTasks() {
 			startTime := time.Now()
 			fmt.Printf("🟢 Processing Task %d (Priority: %d): %s\n", task.ID, task.Priority, task.Data)
 
-			go modules.ThalamusFilter(task)
-			go modules.AmygdalaAnalyze(&task)
-			go modules.Executor(task)
+			// ✅ Pass task to AI Agents
+			go thalamusAgent.ProcessTask(task.Data)
+			go amygdalaAgent.ProcessTask(&task)
+			go executorAgent.ProcessTask(task.Data)
 
 			// Simulate processing delay
 			taskDuration := time.Since(startTime) // ✅ Calculate execution delay
@@ -87,7 +95,7 @@ func processTasks() {
 	}
 }
 
-// ✅ New: Remove expired tasks from queue
+// ✅ Remove expired tasks from queue
 func removeExpiredTasks() {
 	now := time.Now()
 	filteredQueue := []utils.Task{}
