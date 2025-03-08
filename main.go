@@ -1,8 +1,7 @@
 package main
 
 import (
-	"evolvai/modules"
-	"evolvai/utils"
+	"evolvai/taskmanager"
 	"fmt"
 	"time"
 
@@ -17,35 +16,29 @@ func main() {
 
 	// Start EvolvAI Task Manager
 	fmt.Println("🚀 EvolvAI Task Manager Starting...")
+	taskmanager.StartTaskManager() // Start task processing system
 
-	// Start the autonomous CortexBase loop
-	go modules.CortexBase()
-
-	// 🔹 Send test tasks that actually contain important keywords
-	// testTasks := []string{
-	// 	"System error detected",       // ✅ Matches "error"
-	// 	"Memory usage warning",        // ✅ Matches "memory" & "warning"
-	// 	"Critical update required",    // ✅ Matches "critical" & "update"
-	// 	"Self-awareness data stored",  // ✅ Matches "self-awareness"
-	// 	"Pattern recognition triggered", // ✅ Matches "pattern"
-	// }
-
+	// 🔹 Test tasks with different priority levels
 	testTasks := []string{
-		"Critical update required", "System error detected", "Memory usage warning",
-		"Self-awareness data stored", "Pattern recognition triggered",
-		"Disk space low warning", "High CPU temperature detected",
-		"Network latency spike detected", "Filesystem corruption warning",
-		"GPU overheating alert", "Unexpected power failure detected",
+		"Critical update required",  // High Priority
+		"System error detected",     // High Priority
+		"Memory usage warning",      // Medium Priority
+		"Self-awareness data stored", // Low Priority
+		"Pattern recognition triggered", // Low Priority
+		"Disk space low warning",      // Medium Priority
+		"High CPU temperature detected", // Medium Priority
+		"Network latency spike detected", // Low Priority
+		"Filesystem corruption warning", // Medium Priority
+		"GPU overheating alert",        // High Priority
+		"Unexpected power failure detected", // High Priority
 	}
-	
 
-	// Send tasks through Thalamus
-	for i, taskText := range testTasks {
-		task := utils.Task{
-			ID:   i + 1,
-			Data: taskText,
-		}
-		modules.ThalamusFilter(task) // Send task through the pipeline
-		time.Sleep(1 * time.Second) // Simulate time between tasks
+	// Add tasks to Task Manager
+	for _, taskText := range testTasks {
+		taskmanager.AddTask(taskText) // Tasks are automatically prioritized
+		time.Sleep(500 * time.Millisecond) // Simulate task arrival rate
 	}
+
+	// Keep running to allow tasks to be processed
+	time.Sleep(10 * time.Second)
 }

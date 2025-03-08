@@ -9,7 +9,7 @@ import (
 	"evolvai/utils"
 )
 
-// Task queue (for AI task processing)
+// Task queue (priority-based)
 var taskQueue []utils.Task
 
 // Task counter
@@ -21,7 +21,7 @@ func StartTaskManager() {
 	go processTasks()
 }
 
-// AddTask adds new tasks to the system, prioritizing HIGH-priority tasks first
+// AddTask adds new tasks, ensuring priority-based sorting
 func AddTask(data string) {
 	taskCounter++
 	newTask := utils.Task{ID: taskCounter, Data: data}
@@ -32,23 +32,26 @@ func AddTask(data string) {
 	// Add task to queue
 	taskQueue = append(taskQueue, newTask)
 
-	// Sort queue by priority (high-priority tasks first)
-	sort.Slice(taskQueue, func(i, j int) bool {
+	// Sort queue by priority (higher-priority tasks first)
+	sort.SliceStable(taskQueue, func(i, j int) bool {
 		return taskQueue[i].Priority > taskQueue[j].Priority
 	})
+
+	fmt.Printf("📌 Added Task %d (Priority: %d): %s\n", newTask.ID, newTask.Priority, newTask.Data)
 }
 
 // processTasks continuously handles AI tasks (higher priority first)
 func processTasks() {
 	for {
 		if len(taskQueue) > 0 {
+			// Extract task from queue
 			task := taskQueue[0]
-			taskQueue = taskQueue[1:] // Remove first task from queue
+			taskQueue = taskQueue[1:] // Remove from queue
 
 			fmt.Printf("🟢 Processing Task %d (Priority: %d): %s\n", task.ID, task.Priority, task.Data)
 
+			// Execute task through AI modules
 			go modules.ThalamusFilter(task)
-			go modules.AmygdalaAnalyze(&task)
 			go modules.Executor(task)
 
 			time.Sleep(2 * time.Second) // Simulate processing delay
