@@ -29,6 +29,7 @@ func (a *CortexAgent) ProcessTask(task *utils.Task) {
 	// Retrieve past similar tasks from Hippocampus
 	similarTasks, err := a.Hippocampus.RetrieveMemory(task.Data)
 	if err != nil || len(similarTasks) == 0 {
+		// No memory found, process as new task
 		fmt.Println("❌ No past memory found. Processing as a new task.")
 		a.processNewTask(task)
 		return
@@ -40,17 +41,26 @@ func (a *CortexAgent) ProcessTask(task *utils.Task) {
 
 // Handle a completely new task with no memory
 func (a *CortexAgent) processNewTask(task *utils.Task) {
-	fmt.Printf("🧠 New task detected: %s\n", task.Data)
-	fmt.Println("🤔 No past cases found. Handling task using default rules.")
-	// Implement default rule-based decision logic for new tasks.
-	// Example: Tasks with "critical" or "error" keywords are high priority.
-	if strings.Contains(task.Data, "critical") || strings.Contains(task.Data, "error") {
-		task.Priority = utils.High
-		fmt.Println("🛠️ Task is critical! Assigning high priority.")
-	} else {
-		task.Priority = utils.Low
-		fmt.Println("🟢 Task is low priority.")
-	}
+    fmt.Printf("🧠 New task detected: %s\n", task.Data)
+    fmt.Println("🤔 No past cases found. Handling task using default rules.")
+
+    taskDataNormalized := strings.ToLower(strings.TrimSpace(task.Data)) // Normalize the task data
+
+    // Tasks with "critical", "error", or "failure" should get high priority
+    if strings.Contains(taskDataNormalized, "critical") || 
+       strings.Contains(taskDataNormalized, "error") || 
+       strings.Contains(taskDataNormalized, "failure") {
+        task.Priority = utils.High
+        fmt.Println("🛠️ Task is critical! Assigning high priority.")
+    } else if strings.Contains(taskDataNormalized, "memory") || 
+            strings.Contains(taskDataNormalized, "update") {
+        // Tasks with "memory" or "update" should get medium priority
+        task.Priority = utils.Medium
+        fmt.Println("🟠 Task is of medium priority (memory, update).")
+    } else {
+        task.Priority = utils.Medium
+        fmt.Println("🟠 Task is of medium priority.")
+    }
 }
 
 // Compare new task with past memory & decide action
@@ -64,9 +74,11 @@ func (a *CortexAgent) analyzeTask(task *utils.Task, pastTasks []utils.TaskVector
 
 	// Determine next action based on past experience
 	if bestMatch.TaskName == task.Data {
+		// Exact match: retain high priority from past task
 		fmt.Println("✅ Exact past task match! Following previous solution.")
-		// Retrieve past action and execute it (if applicable)
+		task.Priority = utils.High
 	} else {
+		// Partial match: adjust based on learned patterns
 		fmt.Println("🤔 Partial match found. Adapting approach.")
 		a.adaptTaskResponse(task, bestMatch)
 	}
@@ -86,13 +98,20 @@ func (a *CortexAgent) findBestMatch(task *utils.Task, pastTasks []utils.TaskVect
 		}
 	}
 
+	// If no good match is found, return the default task with medium priority
+	if maxSimilarity < 0.5 { // Adjust the threshold as needed
+		fmt.Println("🤔 No good match found, adapting new task behavior.")
+		task.Priority = utils.Medium
+	} else {
+		fmt.Println("✅ Found best match. Following past solution.")
+	}
+
 	return bestMatch
 }
 
 // Calculate similarity between two strings (e.g., cosine similarity)
 func (a *CortexAgent) calculateSimilarity(taskData, taskName string) float64 {
 	// Example: simple string length-based similarity (can be improved)
-	// To be replaced by real cosine similarity or other advanced methods
 	taskDataWords := strings.Fields(strings.ToLower(taskData))
 	taskNameWords := strings.Fields(strings.ToLower(taskName))
 
