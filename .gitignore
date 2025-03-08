@@ -47,10 +47,6 @@ chromadb_data/*
 # Ignore VSCode settings
 .vscode/
 
-# Build files
-knowledge.db
-evolvai_project.zip
-
 # Ignore logs
 logs/
 logs/*.log
