@@ -1,3 +1,4 @@
+// Package utils provides initialization functions for SynthaMind.
 package utils
 
 import (
@@ -8,7 +9,7 @@ import (
 	"net/http"
 )
 
-// EnsureChromaCollection creates the collection if it doesn't exist
+// EnsureChromaCollection ensures the required collection exists in ChromaDB.
 func EnsureChromaCollection() error {
 	url := "http://127.0.0.1:8000/api/v1/collections"
 
@@ -19,27 +20,29 @@ func EnsureChromaCollection() error {
 		},
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("❌ Failed to encode JSON payload: %v", err)
 	}
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
-		return err
+		return fmt.Errorf("❌ Failed to connect to ChromaDB: %v", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to create ChromaDB collection: %s", resp.Status)
+	if resp.StatusCode == http.StatusConflict {
+		log.Println("⚠️ ChromaDB collection 'tasks' already exists. Skipping creation.")
+		return nil
 	}
 
-	log.Println("✅ ChromaDB collection 'tasks' created successfully")
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("❌ Failed to create ChromaDB collection: %s", resp.Status)
+	}
+
+	log.Println("✅ ChromaDB collection 'tasks' created successfully.")
 	return nil
 }
 
-// InitChroma ensures the collection exists before use
+// InitChroma initializes ChromaDB by ensuring the required collection exists.
 func InitChroma() error {
-	if err := EnsureChromaCollection(); err != nil {
-		return err
-	}
-	return nil
+	return EnsureChromaCollection()
 }

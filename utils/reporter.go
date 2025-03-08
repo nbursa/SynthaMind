@@ -1,3 +1,4 @@
+// Package utils provides task execution reporting.
 package utils
 
 import (
@@ -9,6 +10,7 @@ import (
 	"time"
 )
 
+// ReportTaskStats analyzes task logs and reports execution statistics.
 func ReportTaskStats() {
 	file, err := os.Open("logs/tasks.log")
 	if err != nil {
@@ -21,7 +23,7 @@ func ReportTaskStats() {
 	totalExecutionTime := make(map[string]time.Duration)
 
 	scanner := bufio.NewScanner(file)
-	re := regexp.MustCompile(`Task \d+ executed \| Priority: \d+ \| Duration: ([\d\.]+)(µ?s) \| Data: (.+)`)
+	re := regexp.MustCompile(`Task \d+ executed \| Priority: \d+ \| Duration: ([\d\.]+)([µm]s) \| Data: (.+)`)
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -34,10 +36,13 @@ func ReportTaskStats() {
 
 			durationFloat, _ := strconv.ParseFloat(durationStr, 64)
 			var duration time.Duration
-			if unit == "µs" {
+			switch unit {
+			case "µs":
 				duration = time.Duration(durationFloat) * time.Microsecond
-			} else {
+			case "ms":
 				duration = time.Duration(durationFloat) * time.Millisecond
+			default:
+				duration = time.Duration(durationFloat) * time.Second
 			}
 
 			taskCounts[taskName]++

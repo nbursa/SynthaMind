@@ -1,3 +1,4 @@
+// Package utils provides vectorization functions for text-based tasks.
 package utils
 
 import (
@@ -5,7 +6,7 @@ import (
 	"encoding/binary"
 )
 
-// GenerateVector converts text into a hashed float32 vector.
+// GenerateVector converts input text into a hashed float32 vector.
 func GenerateVector(data string) []float32 {
 	hash := sha256.Sum256([]byte(data))
 	vector := make([]float32, 3)

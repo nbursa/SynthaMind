@@ -1,8 +1,9 @@
+// Package utils defines core types for SynthaMind tasks.
 package utils
 
 import "time"
 
-// TaskPriority defines priority levels
+// TaskPriority defines priority levels for tasks.
 type TaskPriority int
 
 const (
@@ -11,18 +12,18 @@ const (
 	Low    TaskPriority = 1
 )
 
-// Task structure used across the system
+// Task represents a unit of work in the AI task manager.
 type Task struct {
-	ID       int
-	Data     string
-	Vector   []float32
-	Priority TaskPriority
-    Timestamp time.Time // ✅ New field for expiry tracking
+	ID        int          `json:"id"`
+	Data      string       `json:"data"`
+	Vector    []float32    `json:"vector"`
+	Priority  TaskPriority `json:"priority"`
+	Timestamp time.Time    `json:"timestamp"` // ✅ Used for task expiration tracking
 }
 
-// TaskVector used for ChromaDB storage
+// TaskVector is used for storing task embeddings in ChromaDB.
 type TaskVector struct {
-	ID       int
-	TaskName string
-	Vector   []float32
+	ID       int       `json:"id"`
+	TaskName string    `json:"task_name"`
+	Vector   []float32 `json:"vector"`
 }
