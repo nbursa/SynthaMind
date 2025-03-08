@@ -1,18 +1,6 @@
-// package utils
-
-// type Task struct {
-//     ID     int
-//     Data   string
-//     Vector []float32
-// }
-
-// type TaskVector struct {
-//     ID       int
-//     TaskName string
-//     Vector   []float32
-// }
-
 package utils
+
+import "time"
 
 // TaskPriority defines priority levels
 type TaskPriority int
@@ -28,7 +16,8 @@ type Task struct {
 	ID       int
 	Data     string
 	Vector   []float32
-	Priority TaskPriority // ✅ ADD THIS FIELD
+	Priority TaskPriority
+    Timestamp time.Time // ✅ New field for expiry tracking
 }
 
 // TaskVector used for ChromaDB storage
