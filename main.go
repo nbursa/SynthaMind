@@ -2,28 +2,36 @@ package main
 
 import (
 	"evolvai/taskmanager"
+	"evolvai/utils"
 	"fmt"
+	"os"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	// Load environment variables
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("Error loading .env file")
+	// 📌 Check if report mode is requested
+	if len(os.Args) > 1 && os.Args[1] == "report" {
+		utils.ReportTaskStats()
+		return
 	}
 
-	// Start Task Manager
+	// 🚀 Start EvolvAI Task Manager
+	fmt.Println("🚀 EvolvAI Task Manager Starting...")
 	taskmanager.StartTaskManager()
 
-	// Add tasks with mixed priorities
-	taskmanager.AddTask("System error detected")      // High Priority
-	taskmanager.AddTask("Memory usage warning")       // Medium Priority
-	taskmanager.AddTask("Critical update required")   // High Priority
-	taskmanager.AddTask("Self-awareness data stored") // Low Priority
-	taskmanager.AddTask("Pattern recognition triggered") // Low Priority
+	// 📌 Define test tasks
+	testTasks := []string{
+		"System error detected", "Memory usage warning", "Critical update required",
+		"Self-awareness data stored", "Pattern recognition triggered",
+	}
 
-	// Allow tasks to be processed
-	time.Sleep(15 * time.Second)
+	// 🔄 Add tasks sequentially with a delay
+	for _, taskText := range testTasks {
+		fmt.Printf("➕ Adding Task: %s\n", taskText) // ✅ Log added tasks
+		taskmanager.AddTask(taskText)
+		time.Sleep(1 * time.Second) // Simulate task arrival delay
+	}
+
+	// ⏳ Wait before exit to allow processing
+	time.Sleep(10 * time.Second) // ✅ Ensure enough time for processing
 }
