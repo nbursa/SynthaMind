@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	// 📌 Check if report mode is requested
+	// 📌 If in report mode, show valid tasks only
 	if len(os.Args) > 1 && os.Args[1] == "report" {
 		utils.ReportTaskStats()
 		return
@@ -32,6 +32,6 @@ func main() {
 		time.Sleep(1 * time.Second) // Simulate task arrival delay
 	}
 
-	// ⏳ Wait before exit to allow processing
-	time.Sleep(10 * time.Second) // ✅ Ensure enough time for processing
+	// ⏳ Wait before exit to allow processing (tasks expire naturally)
+	time.Sleep(5 * time.Second) // ✅ Ensures report checks still work
 }

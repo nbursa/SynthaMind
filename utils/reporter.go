@@ -9,7 +9,6 @@ import (
 	"time"
 )
 
-// ReportTaskStats analyzes task logs
 func ReportTaskStats() {
 	file, err := os.Open("logs/tasks.log")
 	if err != nil {
@@ -20,7 +19,6 @@ func ReportTaskStats() {
 
 	taskCounts := make(map[string]int)
 	totalExecutionTime := make(map[string]time.Duration)
-	taskExecutions := make(map[string]int)
 
 	scanner := bufio.NewScanner(file)
 	re := regexp.MustCompile(`Task \d+ executed \| Priority: \d+ \| Duration: ([\d\.]+)(µ?s) \| Data: (.+)`)
@@ -34,7 +32,6 @@ func ReportTaskStats() {
 			unit := matches[2]
 			taskName := matches[3]
 
-			// Convert duration to time.Duration
 			durationFloat, _ := strconv.ParseFloat(durationStr, 64)
 			var duration time.Duration
 			if unit == "µs" {
@@ -43,18 +40,15 @@ func ReportTaskStats() {
 				duration = time.Duration(durationFloat) * time.Millisecond
 			}
 
-			// Track stats
 			taskCounts[taskName]++
 			totalExecutionTime[taskName] += duration
-			taskExecutions[taskName]++
 		}
 	}
 
-	// Print Report
 	fmt.Println("\n📊 Task Execution Report:")
 	fmt.Println("────────────────────────")
 	for task, count := range taskCounts {
-		avgTime := totalExecutionTime[task] / time.Duration(taskExecutions[task])
+		avgTime := totalExecutionTime[task] / time.Duration(count)
 		fmt.Printf("🔹 %s → Count: %d | Avg Execution Time: %v\n", task, count, avgTime)
 	}
 	fmt.Println("────────────────────────")
