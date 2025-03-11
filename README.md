@@ -45,6 +45,7 @@ SynthaMind is a **community-driven initiative**. If you're passionate about the 
 ### 📩 Contact
 
 For inquiries, collaborations, or research partnerships, feel free to reach out:
+
 🌍 Website: [nenadbursac.com/contact](https://nenadbursac.com/contact)  
 📂 GitHub: [https://github.com/nbursa/SynthaMind](https://github.com/nbursa/SynthaMind)
 
