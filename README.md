@@ -24,7 +24,7 @@ SynthaMind aims to redefine AI by developing an autonomous system that:
 ✔ **Moves beyond LLM-based generation** by integrating agent-based intelligence, neuro-symbolic reasoning, and recursive self-improvement.  
 ✔ **Bridges the gap between AI assistance and true problem-solving autonomy.**
 
-## 🛠️ Current Progress
+## Current Progress
 
 This initial public release includes:
 
