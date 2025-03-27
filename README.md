@@ -2,7 +2,7 @@
 
 ![Status](https://img.shields.io/badge/status-in_development-yellow) ![License](https://img.shields.io/badge/license-AGPLv3-blue)
 
-[Architecture Overview](./docs/ARCHITECTURE.md) • [License](./LICENSE) • [Contributing](./CONTRIBUTING.md)
+[Architecture Overview](./docs/ARCHITECTURE.md) • [License](./LICENSE) • [Contributing](./docs/CONTRIBUTING.md) • [Code of Conduct](./docs/CODE_OF_CONDUCT.md) • [Security Policy](./docs/SECURITY.md)
 
 **SynthaMind** is an open-source AI framework designed to push the boundaries of synthetic intelligence, enabling autonomous learning, adaptation, and reasoning. Unlike traditional AI models that rely on predefined datasets and supervised learning, SynthaMind is built for self-discovery, structured knowledge representation, and cognitive progression.
 
