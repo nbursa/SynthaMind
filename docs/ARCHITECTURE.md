@@ -6,7 +6,7 @@ SynthaMind is built on a modular, cognitive-agent architecture inspired by neuro
 
 ---
 
-## 🏗️ Core Components
+## Core Components
 
 ### 1. `main.go`
 
@@ -81,7 +81,7 @@ Each agent runs in its own goroutine:
 
 ---
 
-## 📦 Planned Improvements
+## Planned Improvements
 
 - Move agent interfaces to `internal/agents/interfaces`
 - Make `cmd/synthamind/main.go` the real entrypoint
@@ -90,7 +90,7 @@ Each agent runs in its own goroutine:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 All modules must:
 
@@ -100,8 +100,8 @@ All modules must:
 
 ---
 
-## 🧩 Goal
+## Goal
 
 Enable long-term, recursive cognitive evolution using pluggable autonomous agents.
 
-> SynthaMind isn’t just a program — it’s a synthetic ecosystem.
+> SynthaMind isn’t just a program — it’s a synthetic cognitive system.
