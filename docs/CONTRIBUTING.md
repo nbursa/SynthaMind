@@ -2,19 +2,19 @@
 
 Thank you for considering contributing to **SynthaMind**! 🚀
 
-## 📝 **Contribution Guidelines**
+## **Contribution Guidelines**
 
 - **Fork the repository** and submit a **Pull Request** with a detailed description.
 - Ensure your contributions align with the **AGPLv3 license** (all changes remain open-source).
 - Clearly document your code and follow the project structure.
 
-## 🔥 **Rules for Contributions**
+## **Rules for Contributions**
 
 ✔ All code must be properly structured and tested.  
 ✔ Any changes must be in line with the **AI framework's core vision**.  
 ✔ Contributors must **credit the original creator, Nenad Bursać**, when referring to the project's ideas.
 
-## 💡 **How to Get Started?**
+## **How to Get Started?**
 
 1. **Clone the repository**
    ```bash
@@ -35,7 +35,7 @@ Thank you for considering contributing to **SynthaMind**! 🚀
    ```
 5. **Submit a pull request for review**
 
-## 🛠️ **Running ChromaDB Locally**
+## **Running ChromaDB Locally**
 
 To run **ChromaDB** locally for storing and retrieving vector data, follow these steps:
 
@@ -58,7 +58,7 @@ To run **ChromaDB** locally for storing and retrieving vector data, follow these
    curl http://127.0.0.1:8000/api/v1
    ```
 
-## 📩 **Contact**
+## **Contact**
 
 For major feature proposals or discussions about collaborations, visit:  
-🌍 **Website:** [https://nenadbursac.com/contact](https://nenadbursac.com/contact)
+**Website:** [https://nenadbursac.com/contact](https://nenadbursac.com/contact)
