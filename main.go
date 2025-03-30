@@ -1,4 +1,11 @@
-// 🚀 SynthaMind - Task Manager Runner
+/**
+ * SynthaMind (c) 2025 Nenad Bursać
+ * Licensed under AGPLv3 - https://www.gnu.org/licenses/agpl-3.0.html
+ * Attribution required. Commercial use prohibited without permission.
+ * See LICENSE file or https://nenadbursac.com/contact
+ */
+
+// SynthaMind - Task Manager Runner
 // This script starts the SynthaMind Task Manager and processes AI-driven tasks.
 
 package main
