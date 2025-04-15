@@ -1,4 +1,4 @@
-# SynthaMind (Public preview)
+# SynthaMind (public preview)
 
 ![Status](https://img.shields.io/badge/status-in_development-yellow) ![License](https://img.shields.io/badge/license-AGPLv3-blue)
 
