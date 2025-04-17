@@ -48,6 +48,14 @@ SynthaMind is a **community-driven initiative**. If you're passionate about the 
 
 ---
 
+## Related Links
+
+- [Project Description](https://nenadbursac.com/projects/synthamind) — Full technical + strategic overview  
+- [Why I’m Building SynthaMind](https://nenadbursac.com/articles/why-synthamind) — Personal essay & motivation  
+- [MindForge Lab](https://nenadbursac.com/lab) — Live experiments in modular cognition
+
+---
+
 ## Contact
 
 For inquiries, collaborations, or research partnerships, feel free to reach out:
