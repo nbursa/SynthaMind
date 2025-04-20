@@ -63,4 +63,15 @@ For inquiries, collaborations, or research partnerships, feel free to reach out:
 
 ---
 
+## License Notice
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPLv3)**.
+
+- **Public Preview**: Intended for researchers and engineers to explore and contribute to the development of synthetic intelligence frameworks.  
+- **Commercial Use**: Any commercial utilization of this project requires a separate commercial license. Please [contact the author](https://nenadbursac.com/contact) to discuss licensing terms.
+
+For full license details, refer to the [LICENSE](https://github.com/nbursa/SynthaMind/blob/main/LICENSE) file.  
+
+---
+
 © 2025 Nenad Bursać. All rights reserved.
