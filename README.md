@@ -36,7 +36,7 @@ This initial public release includes:
 ### Latest
 
 You can read the foundational hypothesis here:  
-[Synthamind Hypothesis Architecture](https://nenadbursac.com/articles/synthamind-hypothesis-architecture)
+[Synthamind Hypothesis & Architecture](https://nenadbursac.com/articles/synthamind-hypothesis-architecture)
 
 ---
 
