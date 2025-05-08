@@ -14,7 +14,6 @@ func ThalamusFilter(task utils.Task) {
 		fmt.Println("✅ Important data detected, passing to Cortex...")
 		go CortexProcess(task)
 	} else {
-		// fmt.Println("🚫 Non-critical data detected, discarding...")
 		fmt.Println("🟠 Non-critical data detected, passing with low priority...")
 		task.Priority = utils.Low // Optionally set priority to low for further processing
 		go CortexProcess(task)
@@ -27,7 +26,7 @@ func isImportant(data string) bool {
 		"self-awareness", "discovery", "environment", "memory", "pattern",
 	}
 
-	// 🔍 Debug: Print each keyword check
+	//  Debug: Print each keyword check
 	fmt.Printf("🔎 Checking if task is important: '%s'\n", data)
 
 	for _, keyword := range importantKeywords {

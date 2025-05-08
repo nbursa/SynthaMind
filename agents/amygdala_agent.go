@@ -9,14 +9,14 @@ import (
 // AmygdalaAgent specializes in analyzing and prioritizing tasks.
 type AmygdalaAgent struct {
 	*BaseAgent
-	memory map[string]utils.TaskPriority // ✅ Store past task data
+	memory map[string]utils.TaskPriority // Store past task data
 }
 
 // NewAmygdalaAgent initializes the AI agent for Amygdala
 func NewAmygdalaAgent() *AmygdalaAgent {
 	return &AmygdalaAgent{
 		BaseAgent: NewAgent("Amygdala"),
-		memory:    make(map[string]utils.TaskPriority), // ✅ Initialize memory storage
+		memory:    make(map[string]utils.TaskPriority), // Initialize memory storage
 	}
 }
 
@@ -24,19 +24,19 @@ func NewAmygdalaAgent() *AmygdalaAgent {
 func (a *AmygdalaAgent) ProcessTask(task *utils.Task) {
 	fmt.Printf("🟠 AI Amygdala Agent processing: %s\n", task.Data)
 
-	// ✅ Check if task was seen before
+	// Check if task was seen before
 	if priority, exists := a.memory[task.Data]; exists {
-		task.Priority = priority // ✅ Use learned priority
+		task.Priority = priority // Use learned priority
 		fmt.Printf("🔁 AI Amygdala RECOGNIZED task, setting previous priority: %d\n", priority)
 	} else {
-		// ✅ If new task, analyze it
+		// If new task, analyze it
 		a.analyzeTask(task)
-		// ✅ Store decision in memory
+		// Store decision in memory
 		a.memory[task.Data] = task.Priority
 	}
 }
 
-// ✅ Task Analysis Logic (adaptive)
+// Task Analysis Logic (adaptive)
 func (a *AmygdalaAgent) analyzeTask(task *utils.Task) {
 	// Convert task data to lowercase for case-insensitive comparison
 	taskData := strings.ToLower(task.Data)
@@ -67,4 +67,3 @@ func (a *AmygdalaAgent) analyzeTask(task *utils.Task) {
 	// Log the decision made by Amygdala
 	fmt.Printf("🔹 AI Amygdala assigned priority %d to Task %d\n", task.Priority, task.ID)
 }
-

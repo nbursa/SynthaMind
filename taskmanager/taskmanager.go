@@ -18,7 +18,7 @@ var taskCounter int
 // Expiry duration for tasks
 const taskExpiry = 5 * time.Minute
 
-// ✅ Initialize AI Agents correctly
+// Initialize AI Agents correctly
 var hippocampusAgent = agents.NewHippocampusAgent()
 var cortexAgent = agents.NewCortexAgent(hippocampusAgent)
 var amygdalaAgent = agents.NewAmygdalaAgent()
@@ -29,10 +29,10 @@ var executorAgent = agents.NewExecutorAgent()
 func StartTaskManager() {
 	fmt.Println("🧠 AI Task Manager Running...")
 
-	// ✅ Retrieve past tasks from HippocampusAgent (Long-Term Memory)
+	// Retrieve past tasks from HippocampusAgent (Long-Term Memory)
 	pastTasks, err := hippocampusAgent.RetrieveMemory("all")
 	if err == nil {
-		thalamusAgent.LearnFromMemory(pastTasks) // ✅ Thalamus learns from past tasks
+		thalamusAgent.LearnFromMemory(pastTasks) // Thalamus learns from past tasks
 	}
 
 	go processTasks()
@@ -47,10 +47,10 @@ func AddTask(data string) {
 		Timestamp: time.Now(),
 	}
 
-	// ✅ Assign priority using Amygdala AI Agent
+	// Assign priority using Amygdala AI Agent
 	amygdalaAgent.ProcessTask(&newTask)
 
-	// ✅ Store task in HippocampusAgent
+	// Store task in HippocampusAgent
 	hippocampusAgent.ProcessTask(&newTask)
 
 	cortexAgent.ProcessTask(&newTask)
@@ -71,7 +71,7 @@ func AddTask(data string) {
 func processTasks() {
 	for {
 		if len(taskQueue) > 0 {
-			removeExpiredTasks() // ✅ Remove expired tasks before processing
+			removeExpiredTasks() // Remove expired tasks before processing
 
 			if len(taskQueue) == 0 {
 				time.Sleep(1 * time.Second)
@@ -85,13 +85,13 @@ func processTasks() {
 			startTime := time.Now()
 			fmt.Printf("🟢 Processing Task %d (Priority: %d): %s\n", task.ID, task.Priority, task.Data)
 
-			// ✅ Step 1: Thalamus filters the task first
+			// Step 1: Thalamus filters the task first
 			thalamusAgent.ProcessTask(&task)
 
-			// ✅ Step 2: If task passes, Amygdala prioritizes it
+			// Step 2: If task passes, Amygdala prioritizes it
 			amygdalaAgent.ProcessTask(&task)
 
-			// ✅ Step 3: Executor performs final execution
+			// Step 3: Executor performs final execution
 			executorAgent.ProcessTask(task.Data)
 
 			// Simulate processing delay
@@ -107,7 +107,7 @@ func processTasks() {
 	}
 }
 
-// ✅ Remove expired tasks from queue
+// Remove expired tasks from queue
 func removeExpiredTasks() {
 	now := time.Now()
 	filteredQueue := []utils.Task{}
@@ -117,14 +117,14 @@ func removeExpiredTasks() {
 			filteredQueue = append(filteredQueue, task) // Keep valid tasks
 		} else {
 			fmt.Printf("🗑️ Expired Task Removed: %d (%s)\n", task.ID, task.Data)
-			utils.LogTaskExpiry(task) // ✅ Log expiry
+			utils.LogTaskExpiry(task) // Log expiry
 		}
 	}
 
 	taskQueue = filteredQueue
 }
 
-// ✅ Debug function: Print current queue
+// Debug function: Print current queue
 func printTaskQueue() {
 	fmt.Println("📌 Current Task Queue (Priority Order):")
 	for _, task := range taskQueue {

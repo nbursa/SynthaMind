@@ -29,11 +29,11 @@ var detectedComponents = make(map[string]bool)
 func CortexBase() {
 	fmt.Println("🧠 CortexBase: Initializing AI self-awareness...")
 
-	// 🔹 Force self-discovery at startup
+	//  Force self-discovery at startup
 	selfDiscover()
 
 	systemTicker := time.NewTicker(10 * time.Second)
-	reviewTicker := time.NewTicker(60 * time.Second) // Every 60 seconds review memory
+	reviewTicker := time.NewTicker(60 * time.Second)    // Every 60 seconds review memory
 	discoveryTicker := time.NewTicker(30 * time.Second) // Every 30s check system components
 
 	for {
@@ -85,7 +85,7 @@ func CortexProcess(task utils.Task) {
 	HippocampusStore(task)
 	fmt.Println("✅ New knowledge stored in Hippocampus.")
 
-	// 🟢 NEW: Execute task action
+	// NEW: Execute task action
 	Executor(task)
 }
 
@@ -168,72 +168,6 @@ func storeSelfKnowledge() {
 	}
 }
 
-// // Self-discovery of available system components
-// func selfDiscover() []string {
-// 	fmt.Println("🔍 Cortex: Performing Self-Discovery...")
-
-// 	components := []string{}
-
-// 	// Check available network interfaces
-// 	interfaces, err := net.Interfaces()
-// 	if err == nil {
-// 		for _, iface := range interfaces {
-// 			component := fmt.Sprintf("🌐 Network Interface: %s", iface.Name)
-// 			if !detectedComponents[component] {
-// 				components = append(components, component)
-// 				detectedComponents[component] = true
-// 			}
-// 		}
-// 	}
-
-// 	// Detect CPU cores
-// 	cpuInfo := fmt.Sprintf("🖥️ CPU Cores: %d", runtime.NumCPU())
-// 	if !detectedComponents[cpuInfo] {
-// 		components = append(components, cpuInfo)
-// 		detectedComponents[cpuInfo] = true
-// 	}
-
-// 	// Detect memory
-// 	memoryStats, err := mem.VirtualMemory()
-// 	if err == nil {
-// 		memInfo := fmt.Sprintf("💾 Memory Available: %.2f GB", float64(memoryStats.Available)/1e9)
-// 		if !detectedComponents[memInfo] {
-// 			components = append(components, memInfo)
-// 			detectedComponents[memInfo] = true
-// 		}
-// 	}
-
-// 	// Detect available disk space
-// 	diskUsage, err := disk.Usage("/")
-// 	if err == nil {
-// 		diskInfo := fmt.Sprintf("📀 Disk Space Available: %.2f GB", float64(diskUsage.Free)/1e9)
-// 		if !detectedComponents[diskInfo] {
-// 			components = append(components, diskInfo)
-// 			detectedComponents[diskInfo] = true
-// 		}
-// 	}
-
-// 	// Scan for system files
-// 	entries, err := os.ReadDir(".")
-// 	if err == nil {
-// 		for _, entry := range entries {
-// 			if strings.HasSuffix(entry.Name(), ".json") || strings.HasSuffix(entry.Name(), ".yaml") {
-// 				configFile := fmt.Sprintf("⚙️ Config File: %s", entry.Name())
-// 				if !detectedComponents[configFile] {
-// 					components = append(components, configFile)
-// 					detectedComponents[configFile] = true
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	if len(components) == 0 {
-// 		fmt.Println("✅ No new components detected.")
-// 	}
-
-// 	fmt.Println("📌 Newly Detected Components:", components)
-// 	return components
-// }
 // Self-discovery of available system components
 func selfDiscover() []string {
 	fmt.Println("🔍 Cortex: Performing Self-Discovery...")
@@ -330,7 +264,7 @@ func GenerateVector(data string) []float32 {
 	vector := make([]float32, 3)
 
 	for i := 0; i < 3; i++ {
-		vector[i] = float32(binary.BigEndian.Uint32(hash[i*8 : (i+1)*8])) / 1e9
+		vector[i] = float32(binary.BigEndian.Uint32(hash[i*8:(i+1)*8])) / 1e9
 	}
 	return vector
 }

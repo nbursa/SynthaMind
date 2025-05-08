@@ -18,7 +18,7 @@ type Task struct {
 	Data      string       `json:"data"`
 	Vector    []float32    `json:"vector"`
 	Priority  TaskPriority `json:"priority"`
-	Timestamp time.Time    `json:"timestamp"` // ✅ Used for task expiration tracking
+	Timestamp time.Time    `json:"timestamp"` //  Used for task expiration tracking
 }
 
 // TaskVector is used for storing task embeddings in ChromaDB.

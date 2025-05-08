@@ -9,14 +9,14 @@ import (
 
 // TestThalamusAgent_ProcessTask ensures important tasks are passed to Cortex, while unimportant ones are discarded.
 func TestThalamusAgent_ProcessTask(t *testing.T) {
-	// 🏗 Setup
+	//  Setup
 	thalamusAgent := agents.NewThalamusAgent()
 
-	// 📌 Define test cases for task filtering
+	//  Define test cases for task filtering
 	tests := []struct {
-		name           string
-		taskData       string
-		expectedOutput string
+		name             string
+		taskData         string
+		expectedOutput   string
 		expectedPriority utils.TaskPriority
 	}{
 		{"Critical system error", "System error detected", "Task is important! Passing to Cortex...", utils.High},
@@ -24,10 +24,10 @@ func TestThalamusAgent_ProcessTask(t *testing.T) {
 		{"High priority urgent update", "Urgent system update", "Task is important! Passing to Cortex...", utils.High},
 		{"Unimportant pattern recognition", "Pattern recognition triggered", "Task is NOT important. Discarding.", utils.Low},
 		{"Neutral task without keywords", "Random task without any specific keyword", "Task is NOT important. Discarding.", utils.Low},
-		{"Empty task data", "", "Task is NOT important. Discarding.", utils.Low}, // ✅ Edge case: Empty input should be discarded.
+		{"Empty task data", "", "Task is NOT important. Discarding.", utils.Low}, //  Edge case: Empty input should be discarded.
 	}
 
-	// 🔄 Iterate through test cases
+	//  Iterate through test cases
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			task := &utils.Task{
@@ -35,13 +35,13 @@ func TestThalamusAgent_ProcessTask(t *testing.T) {
 				Data: test.taskData,
 			}
 
-			// 🚀 Process the task
+			//  Process the task
 			thalamusAgent.ProcessTask(task)
 
-			// 📝 Log task processing result
+			//  Log task processing result
 			t.Logf("Processing task: '%s'", test.taskData)
 
-			// ✅ Validate task priority and expected handling
+			//  Validate task priority and expected handling
 			if test.expectedOutput == "Task is important! Passing to Cortex..." && task.Priority != utils.High {
 				t.Errorf("❌ Task '%s' expected to be High priority but was %d",
 					test.taskData, task.Priority)

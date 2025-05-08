@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var logFile *os.File // ✅ Declared globally for proper file handling.
+var logFile *os.File //  Declared globally for proper file handling.
 
 func init() {
 	// Ensure the "logs" directory exists before writing logs.

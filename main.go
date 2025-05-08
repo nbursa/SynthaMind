@@ -12,17 +12,17 @@ import (
 )
 
 func main() {
-	// 📌 Check if report mode is enabled via CLI argument
+	//  Check if report mode is enabled via CLI argument
 	if len(os.Args) > 1 && os.Args[1] == "report" {
 		utils.ReportTaskStats()
 		return
 	}
 
-	// 🚀 Start the SynthaMind Task Manager
+	//  Start the SynthaMind Task Manager
 	fmt.Println("🚀 SynthaMind Task Manager Starting...")
 	taskmanager.StartTaskManager()
 
-	// 📌 Define test tasks for AI task processing
+	//  Define test tasks for AI task processing
 	testTasks := []string{
 		"System error detected",
 		"Server error occurred",
@@ -35,14 +35,14 @@ func main() {
 		"AI behavior anomaly detected",
 	}
 
-	// 🔄 Add predefined test tasks with simulated delays
+	// Add predefined test tasks with simulated delays
 	for _, taskText := range testTasks {
 		fmt.Printf("➕ Adding Task: %s\n", taskText)
 		taskmanager.AddTask(taskText)
 		time.Sleep(1 * time.Second) // Simulating task arrival over time
 	}
 
-	// ✅ Ensure a graceful shutdown
+	//  Ensure a graceful shutdown
 	fmt.Println("🔻 Shutting down SynthaMind Task Manager...")
 	time.Sleep(2 * time.Second) // Simulate proper cleanup before exit
 }
