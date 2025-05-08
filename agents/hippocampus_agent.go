@@ -30,7 +30,7 @@ func (a *HippocampusAgent) storeMemory(task *utils.Task) {
 	// Ensure the collection is created or accessed in ChromaDB
 	collectionID, err := chroma.EnsureChromaCollection()
 	if err != nil {
-		fmt.Println("❌ Hippocampus Agent failed to access ChromaDB.")
+		fmt.Println("❌ Hippocampus Agent failed to access ChromaDB:", err)
 		return
 	}
 
