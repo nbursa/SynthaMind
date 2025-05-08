@@ -1,4 +1,4 @@
-# SynthaMind
+# SynthaMind (public preview)
 
 ![Status](https://img.shields.io/badge/status-in_development-yellow) ![License](https://img.shields.io/badge/license-AGPLv3-blue)
 
@@ -24,7 +24,7 @@ SynthaMind aims to redefine AI by developing an autonomous system that:
 ✔ **Moves beyond LLM-based generation** by integrating agent-based intelligence, neuro-symbolic reasoning, and recursive self-improvement.  
 ✔ **Bridges the gap between AI assistance and true problem-solving autonomy.**
 
-## Current Progress
+## Progress
 
 This initial public release includes:
 
@@ -32,6 +32,13 @@ This initial public release includes:
 ✅ **Early-stage AI learning mechanisms**  
 ✅ **Modular agent-based design for future AI expansion**  
 ✅ **Experiments in AI reasoning beyond pattern-matching**
+
+### Latest
+
+You can read the foundational hypothesis here:  
+[Synthamind Hypothesis & Architecture](https://nenadbursac.com/articles/synthamind-hypothesis-architecture)
+
+---
 
 ## License & Contribution
 
@@ -48,10 +55,29 @@ SynthaMind is a **community-driven initiative**. If you're passionate about the 
 
 ---
 
+## Related Links
+
+- [Project Description](https://nenadbursac.com/projects/synthamind) — Full technical + strategic overview  
+- [Why I’m Building SynthaMind](https://nenadbursac.com/articles/why-synthamind) — Design principles & motivation
+- [MindForge Lab](https://nenadbursac.com/lab) — Live experiments in modular cognition
+
+---
+
 ## Contact
 
 For inquiries, collaborations, or research partnerships, feel free to reach out:
 [nenadbursac.com/contact](https://nenadbursac.com/contact)
+
+---
+
+## License Notice
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPLv3)**.
+
+- **Public Preview**: Intended for researchers and engineers to explore and contribute to the development of synthetic intelligence frameworks.  
+- **Commercial Use**: Any commercial utilization of this project requires a separate commercial license. Please [contact the author](https://nenadbursac.com/contact) to discuss licensing terms.
+
+For full license details, refer to the [LICENSE](https://github.com/nbursa/SynthaMind/blob/main/LICENSE) file.  
 
 ---
 
