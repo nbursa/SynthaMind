@@ -1,3 +1,4 @@
+<!-- GitAds-Verify: 2MUZVYIXUIMDP7AEHYL2PP21RM1PG12H -->
 # SynthaMind (public preview)
 
 ![Status](https://img.shields.io/badge/status-in_development-yellow) ![License](https://img.shields.io/badge/license-AGPLv3-blue)
