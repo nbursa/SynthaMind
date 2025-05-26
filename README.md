@@ -86,3 +86,5 @@ For full license details, refer to the [LICENSE](https://github.com/nbursa/Synth
 
 ## GitAds Sponsored
 [![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=nbursa/synthamind@github)](https://gitads.dev/v1/ad-track?source=nbursa/synthamind@github)
+
+
