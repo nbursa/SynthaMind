@@ -83,3 +83,6 @@ For full license details, refer to the [LICENSE](https://github.com/nbursa/Synth
 ---
 
 © 2025 Nenad Bursać. All rights reserved.
+
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=nbursa/synthamind@github)](https://gitads.dev/v1/ad-track?source=nbursa/synthamind@github)
